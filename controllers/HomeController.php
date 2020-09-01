@@ -106,4 +106,10 @@ class HomeController extends Controller
         
 
     }
+    function mall(){
+        $this->view("Home/mall");
+    }
+    function admin(){
+        $this->view("Home/admin");
+    }
 }

@@ -11,7 +11,7 @@
     <link href="/RD5_Assignment/css/jquery.toast.css" rel="stylesheet">
     <link href="/RD5_Assignment/css/style.css" rel="stylesheet">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <title>Lab</title>
+    <title>bank</title>
 </head>
 
 <body>
