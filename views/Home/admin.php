@@ -113,12 +113,13 @@
                                     <div class="form-group row">
                                         <div class="offset-4 col-8">
                                             <button id="uploadButton" type="submit" class="btn btn-primary" value="">確定上架</button>
+                                            <button id="cancelButton" type="button" class="btn btn-primary" value="">取消</button>
                                         </div>
                                     </div>
                                 </form>
                                 <button id="showButton" type="button" class="btn btn-primary" value="">已上架商品</button>
                                 <div id="listDiv">
-                                    
+                                  
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">...</div>
@@ -147,11 +148,13 @@
             let input = $("#uploadImage")[0].files[0];
             let name = $("#name").val();
             let category = $("#category").val();
+            let quantity = $("#quantity").val();
             let price = $("#price").val();
             let description = $("#description").val();
             files.append('userID', "1");
             files.append('name', name);
             files.append('category', category);
+            files.append('quantity', quantity);
             files.append('price', price);
             files.append('description', description);
             files.append('image', input);
@@ -182,12 +185,12 @@
                     <img class="img-fluid" src="">
                 </div>
                 <div id="list-body" class="col-md-5">
-                    <div id="list-body-info" class="row">
+                    <div id="list-body-info" >
 
                     </div>
                 </div>
                 <div id="list-footer" class="col-md-2">
-                    <a href="#">編輯</a>
+                    
                 </div>
             </div>`)
             $.ajax({
@@ -195,11 +198,16 @@
                 type: 'POST',
                 dataType: "json",
                 data: {
-                    userID: "1"
+                    userID: "1",
+                    action:"showList"
                 },
                 success: function(data) {
                     //$("#showBox").attr("src", data.src);
-                    showList(data);
+                    if (data.name != "") {
+                        document.getElementById("putForm").reset();
+                        showList(data);
+                    }
+
                     log("display success" + data.name);
                 },
                 error: function(jqXHR) {
@@ -221,22 +229,21 @@
             return indexed_array;
         }
 
-        function showImage(fileName, src, method) {
-            if (method == 0) {
-                let image = new Image(250); // 設定寬250px
-                image.name = fileName;
-                image.src = src; // <img>中src屬性除了接url外也可以直接接Base64字串
-                $("#previewDiv").append(image).append(`<p>File: ${image.name}`);
-            }
+        function showImage(fileName, src) {
+            let image = new Image(250); // 設定寬250px
+            image.name = fileName;
+            image.src = src; // <img>中src屬性除了接url外也可以直接接Base64字串
+            $("#previewDiv").append(image).append(`<p>File: ${image.name}`);
         }
 
         function showList(list) {
             console.log(list['name'][4]);
             for (let i = 0; i < list['name'].length; i++) {
-                name = list['name'][i];
-                category = list['category'][i];
-                price = list['price'][i];
-
+                name        = list['name'][i];
+                category    = list['category'][i];
+                price       = list['price'][i];
+                quantity    = list['quantity'][i];
+                commodityID = list['commodityID'][i];
                 src = "data:image/jpeg;base64," + (list['src'][i]); // <img>中src屬性除了接url外也可以直接接Base64字串
 
                 //$("#list-header img").attr("src",src);
@@ -248,26 +255,66 @@
                 idx = i;
                 nextIdx = i + 1;
                 idName += (idx.toString());
-                if (i < list['name'].length-1) {
+                if (i < list['name'].length - 1) {
                     var addDiv = $("#listDivRow" + idx).clone(true).attr("id", "listDivRow" + nextIdx)
-                    $("#" + idName).after(addDiv);                    
-                }
-                if (true) {
-                    // idName+=(idx.toString());
-                    $('#' + idName + ' #list-header img').attr("src", src);
-                    $('#' + idName + ' #list-body-info').append(`
-                    產品名稱:${name}<br>                                      
-                    價格   :${price}<br>
-                    數量   :0<br>
-                    售出   :0`);
+                    $("#" + idName).after(addDiv);
                 }
 
-                //console.log(idx, nextIdx, idName);
-                //console.log($('#' + idName));
-                //$("#listDivRow"+i).after(addDiv);
-                //$("#list-body-quantity").append(`${image.quantity} <p>`);
+                // idName+=(idx.toString());
+                $('#' + idName + ' #list-header img').attr("src", src);
+                $('#' + idName + ' #list-body-info').append(`
+                    <label>商品編號:</label><span class="commodityID">${commodityID}</span><br>
+                    <label>商品名稱:</label><span class="name">${name}</span><br>
+                    <label>價格:</label><span class="price">${price}</span><br>
+                    <label>數量:</label><span class="quantity">${quantity}</span><br>
+                    <label>售出:</label><span class="quantitySold">0</span>`);
+                $('#' + idName + ' #list-footer').append(`
+                    <a onclick="edit(${idName})" value="${idName}">編輯</a>`)
+
             }
+        }
+        function edit(idName){
+            $.ajax({
+                url: '/PID_Assignment/core/upload.php',
+                type: 'POST',
+                dataType: "json",
+                data: {
+                    userID: "1",
+                    commodityID:$(idName).children(0).children(1).children(1)[1].innerText,
+                    action : "edit"
+                },
+                success: function(data) {
+                    //$("#showBox").attr("src", data.src);
+                    if (data.name != "") {
+                        document.getElementById("putForm").reset();
+                        $("#name").val(data.name);
+                        $("#category").val(data.category);
+                        $("#quantity").val(data.quantity);
+                        $("#price").val(data.price);
+                        $("#description").val(data.description);
+                        
+                        showImage(data.name, "data:image/jpeg;base64,"+data.src)
+                    }
 
+                    log("display success" + data.name);
+                },
+                error: function(jqXHR) {
+                    log(jqXHR);
+                }
+            });
+            // console.log(typeof idName);
+            // console.log($(idName).children(0).children(1).children(1)[1].innerText);
+            // console.log($(idName).children(0).children(1).children(1)[4].innerText);
+            // console.log($(idName).children(0).children(1).children(1)[7].innerText);
+            // console.log($(idName).children(0).children(1).children(1)[10].innerText);
+            // console.log($(idName).children(0).children(1).children(1)[13].innerText);
+            // let input = $("#uploadImage")[0].files[0];
+            //$("#name").val($(idName).children(0).children(1).children(1)[4].innerText);
+            // let category = $("#category").val();
+            // let quantity = $("#quantity").val();
+            // let price = $("#price").val();
+            // let description = $("#description").val();
+            
         }
 
         function previewFiles(files) {
@@ -276,7 +323,7 @@
                     convertFile(file)
                         .then(data => {
                             //console.log(data) // 把編碼後的字串輸出到console
-                            showImage(file.name, data, 0)
+                            showImage(file.name, data)
                             //return data;                  
                         })
                         .catch(err => console.log(err))
