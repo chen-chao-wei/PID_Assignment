@@ -20,17 +20,31 @@ try {
         //echo ($_REQUEST['userID']);
         //$formData = json_decode(file_get_contents($_REQUEST['formData']), true);
         $conn = new DB();
-        $sql = <<<block
-        insert into commodity(userID,name,category,quantity,price,description,img) 
-        values({$_REQUEST['userID']},'{$_REQUEST['name']}','{$_REQUEST['category']}',
-              '{$_REQUEST['quantity']}',{$_REQUEST['price']},'{$_REQUEST['description']}','$file');
-        block;
-        $conn->insert($sql);
-   
-        //$sql = sprintf("insert into commodity(userID,name,img) values({$_REQUEST['userID']},'',%s)", "'" . $file . "'");
-         echo json_encode(array(
-            'sql' => $_REQUEST['description']
-        ));
+        if($_REQUEST['action']=="upload"){
+            $sql = <<<block
+            insert into commodity(userID,name,category,quantity,price,description,img) 
+            values({$_REQUEST['userID']},'{$_REQUEST['name']}','{$_REQUEST['category']}',
+                {$_REQUEST['quantity']},{$_REQUEST['price']},'{$_REQUEST['description']}',:file);
+            block;
+            $conn->stmt->bindParam(':file', $file, PDO::PARAM_LOB);
+            $conn->stmt->execute();
+            $conn->insert($sql);
+            echo json_encode(array(
+            'sql' => "OK"
+            ));
+        }else if($_REQUEST['action']=="edit"){
+            $sql = <<<block
+            update commodity set name ='{$_REQUEST['name']}',category = '{$_REQUEST['category']}',
+                quantity = {$_REQUEST['quantity']},price = {$_REQUEST['price']},
+                description = '{$_REQUEST['description']}',img = '$file' 
+            where userID = {$_REQUEST['userID']} && commodityID={$_REQUEST['commodityID']};                
+            block;
+            $conn->update($sql);
+            echo json_encode(array(
+            'sql' => $_REQUEST['commodityID']
+            ));
+        }
+        
         
         
          
@@ -71,7 +85,7 @@ try {
                 //'src' => "data:image/jpeg;base64," . base64_encode($result[1]['img'])
             ));
         }
-    }else if ($_SERVER['REQUEST_METHOD'] == "POST" && $_POST['action']=="edit") {
+    }else if ($_SERVER['REQUEST_METHOD'] == "POST" && $_REQUEST['action']=="insertForm") {
         @$userID = $_POST["userID"];
         @$commodityID = $_POST["commodityID"];
         if ($userID != null) {

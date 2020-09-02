@@ -80,15 +80,22 @@ class HomeController extends Controller
         elseif (isset($_POST['account'] , $_POST['password']) && isset($_POST['personID'])==false) {
             $userName = $_POST['account'];
             $userPass = $_POST['password'];
-            if ($user->loginVerify($userName, $userPass)) {                
+            $verify = $user->loginVerify($userName, $userPass);
+            
+            if ($verify==1) {                
                 $sUserName = $_POST["account"];
                 if (trim($sUserName) != "") {
                     $_SESSION["userName"] = $sUserName;
                     
                 }                
-                $this->Redirect("hello",$user);
+                $this->Redirect("mall",$user);
                 exit();
-            } else {          
+            } else if($verify<0){          
+                echo '<script>alert("帳號停權")</script>';      
+                $user->flag = false;
+                $this->view("Home/login", $user);
+                exit();
+            }else {          
                 echo '<script>alert("帳號或密碼錯誤")</script>';      
                 $user->flag = false;
                 $this->view("Home/login", $user);

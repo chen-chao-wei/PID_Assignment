@@ -20,11 +20,11 @@
             block;
             $checkAcct  = $this->select($sqlCheckAcct);
             $checkID    = $this->select($sqlCheckID);
-            var_dump($checkID[0]['count(personID)']);
+            
             if($checkAcct[0]['count(account)']+$checkID[0]['count(personID)']==0){
                 $sql = <<<block
-                insert into users (account,password,personID,money) 
-                values('$acct','$pass','$ID','0');
+                insert into users (account,password,personID) 
+                values('$acct','$pass','$ID');
                 block;
                 return $this->insert($sql);
             }
@@ -39,13 +39,16 @@
           }
         //驗證帳密
         function loginVerify($userName,$userPass){
-            $hash = $this->select("SELECT password FROM `users` WHERE account = '$userName'");            
-            if(isset($hash[0]['password'])){
-                return password_verify($userPass, $hash[0]['password']);
+            $hash = $this->select("SELECT password ,ban FROM `users` WHERE account = '$userName'");            
+            if($hash[0]['ban']=="N"){
+                if(isset($hash[0]['password'])){
+                    return (password_verify($userPass, $hash[0]['password']))?1:0;
+                }                
             }
             else{
-                return false;
+                return -1;
             }
+            
             
         }
     }

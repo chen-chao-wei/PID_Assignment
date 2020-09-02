@@ -30,7 +30,7 @@
 
 
         <div id="tab-demo">
-          <ul class="tab-title">
+          <ul class="tab-title text-center ">
             <li><a href="#tab01">
                 <h1> 登入 </h1>
               </a></li>
@@ -38,12 +38,12 @@
                 <h1> 註冊 </h1>
               </a></li>
           </ul>
-          <div id="tab01" class="tab-inner">
+          <div id="tab01" class="tab-inner ">
             <form method="post">
-              <div class="form-group row">
+              <div class="form-group row justify-content-center ">
                 <div class="col-8">
                   <div class="input-group">
-                    <div class="input-group-prepend">
+                    <div class="input-group-prepend ">
                       <div class="input-group-text">
                         <i class="fa fa-address-card"></i>
                       </div>
@@ -54,14 +54,14 @@
                 </div>
               </div>
 
-              <div class="form-group row">
+              <div class="form-group row justify-content-center ">
                 <div class="col-8">
                   <input required id="password" name="password" type="password" aria-describedby="passwordHelpBlock" class="form-control">
                   <span id="passwordHelpBlock" class="form-text text-muted">輸入密碼</span>
                 </div>
               </div>
-              <div class="form-group row">
-                <div class="offset-4 col-8">
+              <div class="form-group row text-center ">
+                <div class="offset-3 col-12">
                   <button name="submit" type="submit" class="btn btn-primary">登入</button>
                 </div>
               </div>

@@ -12,6 +12,17 @@ INSERT INTO inventory (userID, commodityID, quantity)
 Values (new.userID, new.commodityID, new.quantity);
 END;
 $$
-
+DELIMITER $$
+CREATE TRIGGER upd_commodity
+AFTER INSERT ON commodity FOR EACH ROW BEGIN
+UPDATE inventory SET quantity = new.quantity
+WHERE userID = new.userID && commodityID = new.commodityID;
+END;
+$$
 
 $sqlStatement.="ON DUPLICATE KEY UPDATE obsTime=VALUES(obsTime),HOUR_24=VALUES(HOUR_24),RAIN=VALUES(RAIN);";
+
+
+
+
+                
