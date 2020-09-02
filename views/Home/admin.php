@@ -51,7 +51,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-7">
+            <div class="col-md-6">
                 <div class="row">
                     <div class="col">
                         <div class="tab-content" id="v-pills-tabContent">
@@ -135,7 +135,7 @@
                 </div>
 
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <div id="listDiv">
 
                 </div>
@@ -150,9 +150,11 @@
         function log(obj) {
             console.log(obj)
         }
-        // $(window).unload(function() {
-        //     document.getElementById("putForm").reset;
-        // });
+        $('#v-pills-home-tab').on('click', function(e) {
+            e.preventDefault()           
+            $("#listDiv").empty();
+            cancel();
+        })
         window.onbeforeunload = function(e) {
             e = e || window.event;
             if (true) {
@@ -217,12 +219,16 @@
                             log(data.msg);
                         } else {
                             log(data.sql);
+                            $("#previewDiv").empty();
+                            document.getElementById("putForm").reset();
+                            alert("操作成功");
                         }
 
                         log("upload SUCCESS");
                         //$("#putForm").empty();
                     },
                     error: function(jqXHR) {
+                        alert("操作失敗");
                         log(jqXHR);
                     }
                 });
@@ -231,7 +237,7 @@
             cancel = function() {
                 if ($("#checkEditButton").length > 0) {
                     document.getElementById("putForm").reset();
-                    $("previewDiv").empty();
+                    $("#previewDiv").empty();
                     $("#checkEditButton").attr("id", "uploadButton");
                     $("#uploadButton").text("確認上架");
                 } else {
@@ -259,7 +265,11 @@
                 files.append('quantity', quantity);
                 files.append('price', price);
                 files.append('description', description);
-                files.append('image', input);
+                if(input!=undefined){
+                    files.append('image', input);
+                }else{
+                    files.append('image', null);
+                }                
                 //files.append('formData', formData); 
                 console.log("imagefiles:" + input);
                 console.log("allfiles:" + files);
@@ -272,17 +282,18 @@
                     type: 'POST',
                     success: function(data) {
                         if (data.sql == undefined) {
-                            log(data.msg);
-                            document.getElementById("putForm").reset();
-                            $("#checkEditButton").attr("id", "uploadButton");
-                            $("#uploadButton").text("確認上架");
+                            log(data.msg);                            
                         } else {
                             log(data.sql);
+                            $("#showButton").trigger("click");
+                            cancel();
+                            alert("操作成功");
                         }
                         log("checkEdit SUCCESS");
                         //$("#putForm").empty();
                     },
                     error: function(jqXHR) {
+                        alert("操作失敗");
                         log(jqXHR);
                     }
                 });
@@ -400,12 +411,6 @@
                     quantity = list['quantity'][i];
                     commodityID = list['commodityID'][i];
                     src = "data:image/jpeg;base64," + (list['src'][i]); // <img>中src屬性除了接url外也可以直接接Base64字串
-
-                    //$("#list-header img").attr("src",src);
-                    // $("#list-body-info").append(`${name}`);
-                    // $("#list-body-category").append(`${category}`);
-                    // $("#list-body-price").append(`${price}`);
-
                     let idName = "listDivRow"
                     idx = i;
                     nextIdx = i + 1;
@@ -414,8 +419,6 @@
                         var addDiv = $("#listDivRow" + idx).clone(true).attr("id", "listDivRow" + nextIdx)
                         $("#" + idName).after(addDiv);
                     }
-
-                    // idName+=(idx.toString());
                     $('#' + idName + ' #list-header img').attr("src", src);
                     $('#' + idName + ' #list-body-info').append(`
                     <label>商品編號:</label><span class="commodityID">${commodityID}</span><br>
@@ -424,7 +427,7 @@
                     <label>數量:</label><span class="quantity">${quantity}</span><br>
                     <label>售出:</label><span class="quantitySold">0</span>`);
                     $('#' + idName + ' #list-footer').append(`
-                    <a onclick="insertForm(${idName})" value="${idName}">編輯</a>`)
+                    <button onclick="insertForm(${idName})" value="${idName}">編輯</button>`)
 
                 }
             }
@@ -495,8 +498,8 @@
                 usersCount = $("#tab-info input:nth-child(odd)").length;
                 var tr = $('#tab-info').find('tr');
                 var len = tr.length;
-                for (var i = 0; i < len; i++) {                    
-                    var firstTdText = tr.eq(i).find('td').eq(0).text();                   
+                for (var i = 0; i < len; i++) {
+                    var firstTdText = tr.eq(i).find('td').eq(0).text();
                     usersArr.push(firstTdText);
                 }
 
@@ -511,7 +514,7 @@
                     url: "/PID_Assignment/core/Management.php",
                     dataType: "json",
                     data: {
-                        usersID:usersArr,
+                        usersID: usersArr,
                         inputBan: banArr //$("#tab-info input:nth-child(odd)")
                     },
                     success: function(data) {

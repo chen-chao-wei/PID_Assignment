@@ -1,15 +1,28 @@
-# RD5_Assignment
+# PID_Assignment
 ## 0831
   - MVC框架
-  - 登出 ／ 登入
-    - 身分證檢查
-    - 帳號/身分證 不與資料庫重複
-  - 資料庫
-  - AJAX 呼叫 PHP 執行資料庫操作(未完成)
-  - jQuery更新畫面(未完成)
+  - 繼承網路銀行題目的登出/註冊
+  - 基本畫面
+    -商品列表
+    -商品管理
   ### 登入畫面
    ![image](https://github.com/weichen-chungyo/RD5_Assignment/blob/master/viewImages/0827.png)
-  ### 註冊畫面
-   ![image](https://github.com/weichen-chungyo/RD5_Assignment/blob/master/viewImages/0827(1).png)
-### TODO: AJAX 呼叫 PHP 執行資料庫操作
-
+  ### 商品列表畫面
+   ![image](https://github.com/weichen-chungyo/RD5_Assignment/blob/master/viewImages/0831.png)
+  ### 商品管理畫面
+   ![image](https://github.com/weichen-chungyo/RD5_Assignment/blob/master/viewImages/0831(2).png)
+### TODO: 上傳/修改商品資訊
+## 0901
+  - 上傳/修改商品資訊
+  - 資料庫 
+### TODO: 上傳/修改商品資訊(自動完成表單),資料庫,批次處理會員停權
+## 0902
+  - 上傳/修改商品資訊 (自動完成表單)
+  - 資料庫 
+  - 批次處理會員停權
+  ### 上傳修改商品(右側為該用戶已上架商品)
+   ![image](https://github.com/weichen-chungyo/RD5_Assignment/blob/master/viewImages/0902.png)
+  ### 會員停權批次處理
+   ![image](https://github.com/weichen-chungyo/RD5_Assignment/blob/master/viewImages/0902(2).png)
+### TODO: 上傳/修改商品資訊(自動完成表單),資料庫,批次處理會員停權
+  

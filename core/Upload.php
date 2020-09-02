@@ -3,42 +3,54 @@ try {
     include_once 'Database.php';
     //取得上傳檔案資訊
 
-    if ($_SERVER['REQUEST_METHOD'] == "POST" && $_FILES != null) {
-        $filename = $_FILES['image']['name'];
-        $tmpname = $_FILES['image']['tmp_name'];
-        $filetype = $_FILES['image']['type'];
-        $filesize = $_FILES['image']['size'];
-        $file = NULL;
+    if ($_SERVER['REQUEST_METHOD'] == "POST" && $_REQUEST['action']=="upload" ||$_REQUEST['action']=="edit") {
+        if($_FILES != null){
+            $filename = $_FILES['image']['name'];
+            $tmpname = $_FILES['image']['tmp_name'];
+            $filetype = $_FILES['image']['type'];
+            $filesize = $_FILES['image']['size'];
+            $file = NULL;
+            
+            if (isset($_FILES['image']['error'])) {
+                if ($_FILES['image']['error'] == 0) {
+                    $instr = fopen($tmpname, "rb");
+                    $file = addslashes(fread($instr, filesize($tmpname)));
+                }
+            }        
+        }
         
-        if (isset($_FILES['image']['error'])) {
-            if ($_FILES['image']['error'] == 0) {
-                $instr = fopen($tmpname, "rb");
-                $file = addslashes(fread($instr, filesize($tmpname)));
-            }
-        }        
         
         //echo ($_REQUEST['userID']);
         //$formData = json_decode(file_get_contents($_REQUEST['formData']), true);
         $conn = new DB();
-        if($_REQUEST['action']=="upload"){
+        if($_REQUEST['action']=="upload"&& $_FILES != null){
             $sql = <<<block
             insert into commodity(userID,name,category,quantity,price,description,img) 
             values({$_REQUEST['userID']},'{$_REQUEST['name']}','{$_REQUEST['category']}',
-                {$_REQUEST['quantity']},{$_REQUEST['price']},'{$_REQUEST['description']}',:file);
+                {$_REQUEST['quantity']},{$_REQUEST['price']},'{$_REQUEST['description']}','$file');
             block;
-            $conn->stmt->bindParam(':file', $file, PDO::PARAM_LOB);
-            $conn->stmt->execute();
+           
             $conn->insert($sql);
             echo json_encode(array(
             'sql' => "OK"
             ));
         }else if($_REQUEST['action']=="edit"){
-            $sql = <<<block
-            update commodity set name ='{$_REQUEST['name']}',category = '{$_REQUEST['category']}',
-                quantity = {$_REQUEST['quantity']},price = {$_REQUEST['price']},
-                description = '{$_REQUEST['description']}',img = '$file' 
-            where userID = {$_REQUEST['userID']} && commodityID={$_REQUEST['commodityID']};                
-            block;
+            if($_FILES!=null){
+                $sql = <<<block
+                update commodity set name ='{$_REQUEST['name']}',category = '{$_REQUEST['category']}',
+                    quantity = {$_REQUEST['quantity']},price = {$_REQUEST['price']},
+                    description = '{$_REQUEST['description']}',img = '$file' 
+                where userID = {$_REQUEST['userID']} && commodityID={$_REQUEST['commodityID']};                
+                block;
+            }else{
+                $sql = <<<block
+                update commodity set name ='{$_REQUEST['name']}',category = '{$_REQUEST['category']}',
+                    quantity = {$_REQUEST['quantity']},price = {$_REQUEST['price']},
+                    description = '{$_REQUEST['description']}' 
+                where userID = {$_REQUEST['userID']} && commodityID={$_REQUEST['commodityID']};                
+                block;
+            }
+           
             $conn->update($sql);
             echo json_encode(array(
             'sql' => $_REQUEST['commodityID']
