@@ -17,10 +17,10 @@
             <div class="col-md-12">
                 <ul class="nav">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">Home</a>
+                        <a class="nav-link active" href="/PID_Assignment/home/mall">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Profile</a>
+                        <a class="nav-link"  href="/PID_Assignment/home/admin">賣家中心</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link disabled" href="#">Messages</a>
@@ -28,9 +28,9 @@
                     <li class="nav-item dropdown ml-md-auto">
                         <div class="row">
                         <a class="nav-link " href="#"> 幫助中心</a>
-                        <a class="nav-link " href="http://example.com" id="navbarMenuLink" >註冊</a>
-                        <a class="nav-link">|</a>
-                        <a class="nav-link " href="http://example.com" id="navbarMenuLink" >登入</a>
+                        <a class="nav-link " href="/PID_Assignment/home/login" id="navbarMenuLink" >登入 / 註冊</a>
+                        <!-- <a class="nav-link">|</a>
+                        <a class="nav-link " href="/PID_Assignment/home/login" id="navbarMenuLink" >登入</a> -->
                         </div>
                         <div class="col">
                         

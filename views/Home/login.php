@@ -69,9 +69,9 @@
           </div>
           <div id="tab02" class="tab-inner">          
             <form method="post" onsubmit="return checkID()">
-              <div class="form-group row">
+              <div class="form-group row justify-content-center">
                 <div class="col-8">
-                  <div class="input-group">
+                  <div class="input-group ">
                     <div class="input-group-prepend">
                       <div class="input-group-text">
                         <i class="fa fa-address-card"></i>
@@ -82,20 +82,20 @@
                   <span id="accountHelpBlock" class="form-text text-muted">輸入帳號</span>
                 </div>
               </div>
-              <div class="form-group row">
+              <div class="form-group row justify-content-center">
                 <div class="col-8">
                   <input required id="personID" name="personID" type="text" class="form-control" aria-describedby="personIDHelpBlock">
                   <span id="personIDHelpBlock" class="form-text text-muted">輸入身分證</span>
                 </div>
               </div>
-              <div class="form-group row">
+              <div class="form-group row justify-content-center">
                 <div class="col-8">
                   <input required id="password" name="password" type="password" aria-describedby="passwordHelpBlock" class="form-control">
                   <span id="passwordHelpBlock" class="form-text text-muted">輸入密碼</span>
                 </div>
               </div>
-              <div class="form-group row">
-                <div class="offset-4 col-8">
+              <div class="form-group row text-center">
+                <div class="offset-3 col-12">
                   <button name="submit" type="submit" class="btn btn-primary">註冊</button>
 
                 </div>

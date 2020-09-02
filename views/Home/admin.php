@@ -20,10 +20,10 @@
             <div class="col-md-12">
                 <ul class="nav">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">賣家中心</a>
+                        <a class="nav-link active" href="/PID_Assignment/home/admin">賣家中心</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">回購物中心</a>
+                        <a class="nav-link" href="/PID_Assignment/home/mall">回購物中心</a>
                     </li>
                     <li class="nav-item dropdown ml-md-auto">
                         <div class="row">
