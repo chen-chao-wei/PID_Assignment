@@ -28,9 +28,7 @@
                     <li class="nav-item dropdown ml-md-auto">
                         <div class="row">
                             <a class="nav-link " href="#"> 幫助中心</a>
-                            <a class="nav-link " href="http://example.com" id="navbarMenuLink">註冊</a>
-                            <a class="nav-link">|</a>
-                            <a class="nav-link " href="http://example.com" id="navbarMenuLink">登入</a>
+                            <a class="nav-link " href="/PID_Assignment/home/login" id="navbarMenuLink" >登入 / 註冊</a>
                         </div>
                         <div class="col">
 
@@ -151,9 +149,15 @@
             console.log(obj)
         }
         $('#v-pills-home-tab').on('click', function(e) {
-            e.preventDefault()           
+            e.preventDefault()
+            getMemberInfo();
             $("#listDiv").empty();
             cancel();
+        })
+        $('#v-pills-profile-tab').on('click', function(e) {
+            e.preventDefault()
+            $('usersManagement').empty();
+                        
         })
         window.onbeforeunload = function(e) {
             e = e || window.event;
@@ -167,21 +171,30 @@
             }
         }
         $(document).ready(function() {
-            $.ajax({
-                type: "GET",
-                url: "/PID_Assignment/core/Management.php",
-                dataType: "json",
-                success: function(data) {
-                    if (data.users) {
-                        doTable(data.users);
-                        //console.log(data.users);
-                        //console.log(data.users[1]['account']);
-                    }
-                },
-                error: function(jqXHR) {
-                    console.log("get fail");
+
+            getMemberInfo = function() {
+                $("#usersManagement").empty();
+                $("#managementButton").text("確認操作");
+                document.getElementById('managementButton').onclick = function() {
+                    management();
                 }
-            })
+                $.ajax({
+                    type: "GET",
+                    url: "/PID_Assignment/core/Management.php",
+                    dataType: "json",
+                    success: function(data) {
+                        if (data.users) {
+                            doMemberTable(data.users);
+                            //console.log(data.users);
+                            //console.log(data.users[1]['account']);
+                        }
+                    },
+                    error: function(jqXHR) {
+                        console.log("get fail");
+                    }
+                })
+            }
+            getMemberInfo();
             console.log("ready!");
             //上架商品
             upload = function() {
@@ -265,11 +278,11 @@
                 files.append('quantity', quantity);
                 files.append('price', price);
                 files.append('description', description);
-                if(input!=undefined){
+                if (input != undefined) {
                     files.append('image', input);
-                }else{
+                } else {
                     files.append('image', null);
-                }                
+                }
                 //files.append('formData', formData); 
                 console.log("imagefiles:" + input);
                 console.log("allfiles:" + files);
@@ -282,7 +295,7 @@
                     type: 'POST',
                     success: function(data) {
                         if (data.sql == undefined) {
-                            log(data.msg);                            
+                            log(data.msg);
                         } else {
                             log(data.sql);
                             $("#showButton").trigger("click");
@@ -462,8 +475,66 @@
                     reader.readAsDataURL(file)
                 })
             }
+            checkDetail = function(e) {
+                console.log("checkDetail" + e);
+                id = e.value;
+
+                $.ajax({
+                    type: "POST",
+                    url: "/PID_Assignment/core/Management.php",
+                    dataType: "json",
+                    data: {
+                        usersID: id,
+                        checkDetail: 1, //$("#tab-info input:nth-child(odd)")
+                        action: "checkDetail"
+                    },
+                    success: function(data) {
+                        if (data.detail) {
+                            console.log(data.detail);
+
+                            doDetailTable($("#tr-member" + id), data.detail);
+                            //doMemberTable(data.detail);
+                            
+                        } else {
+                            alert(data.errorMsg);
+                            console.log(data.errorMsg);
+                        }
+                        //$("#tr-member"+id).after("<tr id='detail'></tr>")             
+                    },
+                    error: function(jqXHR) {
+                        console.log(jqXHR);
+                    }
+                })
+            }
+            //查看用戶訂單
+            function doDetailTable(idx, data) {
+                $("#managementButton").text("回會員管理");
+                document.getElementById('managementButton').onclick = function() {
+                    getMemberInfo();
+                }
+                console.log(idx, data);
+                $("#usersManagement").empty();
+                let rowElements = [];
+                rowElements.push(
+                    $("<table id='tab-detail'></table>")
+                    .addClass("table ")
+                    .append($('<thead></thead>').append(`<tr><th scope="col">訂單編號</th><th scope="col">會員帳號</th>
+                    <th scope="col">時間</th><th scope="col">操作</th><th scope="col">金額</th><th scope="col">狀態</th><th scope="col">賣家</th></tr>`))
+                );
+                $("#usersManagement").append(rowElements);
+                $.each(data, function(key, value) {
+                    console.log(value['userID']);
+                    var tableElements = $(`<tr id='detail'><td>${value['inventoryID']}</td><td>${value['account']}</td>
+                     <td>${value['datatime']}</td><td>${value['actionName']}</td><td>${value['amount']}</td>
+                     <td>${value['status']}</td><td>${value['sellerID']}</td></tr>`);
+                    tableElements.appendTo("#tab-detail");
+                    // idx.after(`<tr id='detail'><td>${value['userID']}</td><td>${value['account']}</td>
+                    // <td>${value['datatime']}</td><td>${value['actionName']}</td><td>${value['amount']}</td>
+                    // <td>${value['status']}</td><td>${value['sellerID']}</td></tr>`);
+                })
+            }
             //生成會員管理表
-            function doTable(data) {
+            function doMemberTable(data) {
                 let rowElements = [];
                 let tableClassArr = ["class='tab-checkRecord'", "class='tab-withdraw'", "class='tab-deposit'"];
                 let isAmount = ["-", "$"];
@@ -485,13 +556,16 @@
                     }
                     count += 2;
 
-                    var tableElements = $("<tr><td>" + data[i]['userID'] + "</td><td>" + data[i]['account'] + "</td>" +
-                        "<td>" + data[i]['personID'] + "</td>" + "<td>" + banHtml + "</td><td>" + "明細" + "</td></tr>")
+                    var tableElements = $("<tr id=tr-member" + data[i]['userID'] + "><td>" + data[i]['userID'] + "</td><td>" + data[i]['account'] + "</td>" +
+                        "<td>" + data[i]['personID'] + "</td>" + "<td>" + banHtml + "</td><td>" + "<button id=checkDetailButton type ='button' onclick='checkDetail(this)' value=" + data[i]['userID'] + ">詳細明細</button>" + "</td></tr>")
                     tableElements.appendTo("#tab-info");
                 }
                 console.log($("#tab-info input:nth-child(odd)").length);
 
             }
+
+
+
             management = function() {
                 banArr = [];
                 usersArr = [];
@@ -515,12 +589,15 @@
                     dataType: "json",
                     data: {
                         usersID: usersArr,
-                        inputBan: banArr //$("#tab-info input:nth-child(odd)")
+                        inputBan: banArr, //$("#tab-info input:nth-child(odd)")
+                        action: "management"
                     },
                     success: function(data) {
                         if (data.users) {
                             $("#usersManagement").empty();
-                            doTable(data.users);
+                            
+                            doMemberTable(data.users);
+                            alert("操作成功");
                         }
                         console.log(data.users);
                         console.log("management SUCCESS");

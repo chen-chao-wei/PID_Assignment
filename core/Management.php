@@ -6,16 +6,25 @@ function getUsersInfo(){
     $sqlGetUsers = <<<block
         select userID ,account ,personID ,ban from users ;
         block;
-    $users = $conn->select($sqlGetUsers);
-    return $users;
+    $result = $conn->select($sqlGetUsers);
+    return $result;
 }
 function setUsersInfo($isBan){
     $conn = new DB();
     $sqlGetUsers = <<<block
         select userID ,account ,personID ,ban from users ;
         block;
-    $users = $conn->select($sqlGetUsers);
-    return $users;
+    $result = $conn->select($sqlGetUsers);
+    return $result;
+}
+function getUserDetail($userID){
+    $conn = new DB();
+    $sqlGetDetail = <<<block
+        select userID ,account ,datatime ,actionName,amount,status,sellerID,inventoryID 
+        from userDetail where userID = $userID;
+        block;
+    $result = $conn->select($sqlGetDetail);
+    return $result;
 }
 header('Content-Type: application/json; charset=UTF-8');
 if ($_SERVER['REQUEST_METHOD'] == "GET") {
@@ -29,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
             'errorMsg' => "查詢失敗,ERROR CODE:2"
         ));
     }
-}else if($_SERVER['REQUEST_METHOD'] == "POST") {    
+}else if($_SERVER['REQUEST_METHOD'] == "POST"&& $_POST['action']=="management") {    
     $inputBan = $_POST['inputBan'];
     $usersID = $_POST['usersID'];
     $count = count($inputBan);
@@ -51,12 +60,18 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
         echo json_encode(array(
             'errorMsg' => "查詢失敗,ERROR CODE:2"
         ));
-    }    
-    // if (setUsersInfo($test)) {       
-    //     echo json_encode(array(
-    //         'users' => $result
-    //     ));
-    // }
+    }        
+}else  if($_SERVER['REQUEST_METHOD'] == "POST" && $_POST['action']=="checkDetail") {    
+    $result = getUserDetail($_POST['usersID']);
+    if ($result) {       
+        echo json_encode(array(
+            'detail' => $result
+        ));
+    } else {
+        echo json_encode(array(
+            'errorMsg' => "查詢失敗,ERROR CODE:2"
+        ));
+    }        
 }
 
 ?>
