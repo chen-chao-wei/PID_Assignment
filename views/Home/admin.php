@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="/RD5_Assignment/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/RD5_Assignment/css/jquery.toast.css" rel="stylesheet">
-    <link href="/RD5_Assignment/css/style.css" rel="stylesheet">
+    <link href="/PID_Assignment/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/PID_Assignment/css/jquery.toast.css" rel="stylesheet">
+    <link href="/PID_Assignment/css/style.css" rel="stylesheet">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <title>mall</title>
     <script src="../js/jquery.js"></script>
@@ -478,7 +478,6 @@
             checkDetail = function(e) {
                 console.log("checkDetail" + e);
                 id = e.value;
-
                 $.ajax({
                     type: "POST",
                     url: "/PID_Assignment/core/Management.php",
@@ -491,7 +490,6 @@
                     success: function(data) {
                         if (data.detail) {
                             console.log(data.detail);
-
                             doDetailTable($("#tr-member" + id), data.detail);
                             //doMemberTable(data.detail);
                             
@@ -564,8 +562,6 @@
 
             }
 
-
-
             management = function() {
                 banArr = [];
                 usersArr = [];
@@ -607,6 +603,13 @@
                     }
                 })
             }
+            $("#listDiv img").hover(function() {
+                $(this).addClass("img-in");
+                console.log("in");
+            }, function() {
+                $(this).removeClass("img-in");
+                console.log("out");
+            })
         });
     </script>
 

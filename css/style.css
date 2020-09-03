@@ -43,8 +43,24 @@ tr:last-child td:last-child{
   }
 #tab-info{border-collapse: initial;}
 /* ======================== */
-
+.header{
+    background-color: rgb(25, 92, 42);
+    position: static;
+    z-index: 1;
+}
+.content {padding: 16px; }
+.header a{color: white; margin-right: 0.625rem;}
+.header-link:hover{color: rgb(182, 177, 177); margin-right: 0.625rem;}
+.header button{color: white; margin: 0.625rem;}
+body{background-color: rgb(245 245 245);}
+.header .navbar{background-color: rgb(25, 92, 42);}
+#div-carousel img{height: 300px;}
 /*圖片操作區*/
+/* .card-group div{ border-radius:30px;} padding: 0 .3125rem;*/
+
+.card-group div{padding: 0 .3125rem;}
+.card-group .card{padding:0.3125rem;margin:.625rem;border:1px solid transparent;box-shadow:0 0.0625rem 0.125rem 0 rgba(0,0,0,.1); box-sizing: border-box;}
+.card-group .card:hover{border:1px solid ;border-color: #a8163d; box-shadow: 0px 0px 5px #193045 ;}
 #div-img-action div{ border-radius:30px;}
 .img-in{box-shadow: 0px 0px 15px #193045 ;}
 .text-in{text-shadow: 1px 0px 0px #366a9b ;}

@@ -24,5 +24,9 @@
    ![image](https://github.com/weichen-chungyo/PID_Assignment/blob/master/viewImages/0902.png)
   ### 會員停權批次處理
    ![image](https://github.com/weichen-chungyo/PID_Assignment/blob/master/viewImages/0902(2).png)
-### TODO: 上傳/修改商品資訊(自動完成表單),資料庫,批次處理會員停權
-  
+### TODO: 
+## 0903
+  - 商品列表
+  - 美化UI
+  - 購物車  
+### TODO: 購物車,session

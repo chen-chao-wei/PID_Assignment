@@ -119,4 +119,7 @@ class HomeController extends Controller
     function admin(){
         $this->view("Home/admin");
     }
+    function shopCart(){
+        $this->view("Home/shopCart");
+    }
 }

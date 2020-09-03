@@ -20,7 +20,7 @@ function setUsersInfo($isBan){
 function getUserDetail($userID){
     $conn = new DB();
     $sqlGetDetail = <<<block
-        select userID ,account ,datatime ,actionName,amount,status,sellerID,inventoryID 
+        select *
         from userDetail where userID = $userID;
         block;
     $result = $conn->select($sqlGetDetail);

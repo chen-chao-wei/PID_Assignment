@@ -1,48 +1,96 @@
 <?php
-try {
-    include_once 'Database.php';
-    //取得上傳檔案資訊
+include_once 'Database.php';
 
-    if ($_SERVER['REQUEST_METHOD'] == "POST" && $_REQUEST['action']=="upload" ||$_REQUEST['action']=="edit") {
-        if($_FILES != null){
+function getCommodity()
+{
+    $conn = new DB();
+    $sqlGetCommodity = <<<block
+        select name ,commodityID,category ,quantity,price,description,img  from commodity ;
+        block;
+    $result = $conn->select($sqlGetCommodity);
+    foreach ($result as $key => $item) {
+        $result[$key]['img'] = base64_encode($item['img']);
+    }
+    return $result;
+}
+function setShopCart($userID, $commodityID, $actionName)
+{
+    $conn = new DB();
+    $sqlGetCommodity = <<<block
+        select name ,commodityID,category ,quantity,price,description  
+        from commodity where commodityID = $commodityID;
+        block;
+    $commodityInfo = $conn->select($sqlGetCommodity);
+    $setShopCart = <<<block
+        insert into  userDetail (userID,actionName,amount,status,
+        sellerID) values($userID,"buy",{$commodityInfo[0]['price']},
+        "OK",$userID)
+        block;
+    $conn->select($setShopCart);
+}
+function getShopCart($userID)
+{
+    $conn = new DB();
+    $sqlGetShopCarty = <<<block
+        select * from userDetail where userID = $userID;
+        block;
+    $result = $conn->select($sqlGetShopCarty);
+
+    return $result;
+}
+try {
+
+    //取得上傳檔案資訊
+    if ($_SERVER['REQUEST_METHOD'] == "GET") {
+        $result = getCommodity();
+        if ($result) {
+            echo json_encode(array(
+                'commodityData' => $result
+            ));
+        } else {
+            echo json_encode(array(
+                'errorMsg' => "ERROR"
+            ));
+        }
+    } elseif ($_SERVER['REQUEST_METHOD'] == "POST" && $_REQUEST['action'] == "upload" || $_REQUEST['action'] == "edit") {
+        if ($_FILES != null) {
             $filename = $_FILES['image']['name'];
             $tmpname = $_FILES['image']['tmp_name'];
             $filetype = $_FILES['image']['type'];
             $filesize = $_FILES['image']['size'];
             $file = NULL;
-            
+
             if (isset($_FILES['image']['error'])) {
                 if ($_FILES['image']['error'] == 0) {
                     $instr = fopen($tmpname, "rb");
                     $file = addslashes(fread($instr, filesize($tmpname)));
                 }
-            }        
+            }
         }
-        
-        
+
         //echo ($_REQUEST['userID']);
         //$formData = json_decode(file_get_contents($_REQUEST['formData']), true);
         $conn = new DB();
-        if($_REQUEST['action']=="upload"&& $_FILES != null){
+        if ($_REQUEST['action'] == "upload" && $_FILES != null) {
             $sql = <<<block
             insert into commodity(userID,name,category,quantity,price,description,img) 
             values({$_REQUEST['userID']},'{$_REQUEST['name']}','{$_REQUEST['category']}',
                 {$_REQUEST['quantity']},{$_REQUEST['price']},'{$_REQUEST['description']}','$file');
             block;
-           
+
             $conn->insert($sql);
             echo json_encode(array(
-            'sql' => "OK"
+                'sql' => "OK"
             ));
-        }else if($_REQUEST['action']=="edit"){
-            if($_FILES!=null){
+        } else if ($_REQUEST['action'] == "edit") {
+            if ($_FILES != null) {
                 $sql = <<<block
                 update commodity set name ='{$_REQUEST['name']}',category = '{$_REQUEST['category']}',
                     quantity = {$_REQUEST['quantity']},price = {$_REQUEST['price']},
                     description = '{$_REQUEST['description']}',img = '$file' 
                 where userID = {$_REQUEST['userID']} && commodityID={$_REQUEST['commodityID']};                
                 block;
-            }else{
+            } else {
                 $sql = <<<block
                 update commodity set name ='{$_REQUEST['name']}',category = '{$_REQUEST['category']}',
                     quantity = {$_REQUEST['quantity']},price = {$_REQUEST['price']},
@@ -50,17 +98,13 @@ try {
                 where userID = {$_REQUEST['userID']} && commodityID={$_REQUEST['commodityID']};                
                 block;
             }
-           
+
             $conn->update($sql);
             echo json_encode(array(
-            'sql' => $_REQUEST['commodityID']
+                'sql' => $_REQUEST['commodityID']
             ));
         }
-        
-        
-        
-         
-    } else if ($_SERVER['REQUEST_METHOD'] == "POST" && $_POST['action']=="showList") {
+    } else if ($_SERVER['REQUEST_METHOD'] == "POST" && $_POST['action'] == "showList") {
         @$userID = $_POST["userID"];
         if ($userID != null) {
             $conn        = new DB();
@@ -75,45 +119,45 @@ try {
             $sql = sprintf("select userID,LPAD(commodityID,10,0) as commodityID,name,category,quantity,price,description,img from commodity where userID=$userID");
             $result = $conn->select($sql);
             //var_dump($result);
-            foreach($result as $item){
-                array_push($commodityID,$item['commodityID']);
-                array_push($name,$item['name']);
-                array_push($category,$item['category']);
-                array_push($quantity,$item['quantity']);
-                array_push($price,$item['price']);
-                array_push($description,$item['description']);                
-                array_push($base64Src,base64_encode($item['img']));
+            foreach ($result as $item) {
+                array_push($commodityID, $item['commodityID']);
+                array_push($name, $item['name']);
+                array_push($category, $item['category']);
+                array_push($quantity, $item['quantity']);
+                array_push($price, $item['price']);
+                array_push($description, $item['description']);
+                array_push($base64Src, base64_encode($item['img']));
             }
             // foreach()
             // array_push($quantity,$item['quantity']);
             echo json_encode(array(
                 'commodityID' => $commodityID,
-                'name'        => $name ,
-                'category'    => $category ,
-                'quantity'    => $quantity ,
-                'price'       => $price ,
-                'description' => $description ,                
+                'name'        => $name,
+                'category'    => $category,
+                'quantity'    => $quantity,
+                'price'       => $price,
+                'description' => $description,
                 'src'         => $base64Src
                 //'src' => "data:image/jpeg;base64," . base64_encode($result[1]['img'])
             ));
         }
-    }else if ($_SERVER['REQUEST_METHOD'] == "POST" && $_REQUEST['action']=="insertForm") {
+    } else if ($_SERVER['REQUEST_METHOD'] == "POST" && $_REQUEST['action'] == "insertForm") {
         @$userID = $_POST["userID"];
         @$commodityID = $_POST["commodityID"];
         if ($userID != null) {
             $conn        = new DB();
-            $commodityID ;
-            $name        ;
-            $category    ;
-            $quantity    ;
-            $price       ;
-            $description ;
-            $quantity    ;
-            $base64Src   ;
+            $commodityID;
+            $name;
+            $category;
+            $quantity;
+            $price;
+            $description;
+            $quantity;
+            $base64Src;
             $sql = sprintf("select userID,LPAD(commodityID,10,0) as commodityID,name,category,quantity,price,description,img from commodity where userID=$userID &&commodityID=$commodityID");
             $result = $conn->select($sql);
             //var_dump($result);
-            foreach($result as $item){
+            foreach ($result as $item) {
                 $commodityID = $item['commodityID'];
                 $name = $item['name'];
                 $category = $item['category'];
@@ -121,7 +165,7 @@ try {
                 $price = $item['price'];
                 $description = $item['description'];
                 $base64Src = base64_encode($item['img']);
-                
+
                 // array_push($category,$item['category']);
                 // array_push($quantity,$item['quantity']);
                 // array_push($price,$item['price']);
@@ -132,19 +176,36 @@ try {
             // array_push($quantity,$item['quantity']);
             echo json_encode(array(
                 'commodityID' => $commodityID,
-                'name'        => $name ,
-                'category'    => $category ,
-                'quantity'    => $quantity ,
-                'price'       => $price ,
-                'description' => $description ,                
+                'name'        => $name,
+                'category'    => $category,
+                'quantity'    => $quantity,
+                'price'       => $price,
+                'description' => $description,
                 'src'         => $base64Src
             ));
         }
-    }else{
+    } else if ($_SERVER['REQUEST_METHOD'] == "POST" && $_POST['action'] == "addToShopCart") {
+        setShopCart($_POST['userID'], $_POST['commodityID'], "buy");
+        echo json_encode(array(
+            'msg' => "OK"
+        ));
+    } else if ($_SERVER['REQUEST_METHOD'] == "POST" && $_POST['action'] == "checkShopCart") {
+        $result = getShopCart($_POST['userID']);
+        if ($result) {
+            echo json_encode(array(
+                'shopCartList' =>  $result
+            ));
+        } else {
+            echo json_encode(array(
+                'errorMsg' => "ERROR"
+            ));
+        }
+    } else {
         echo json_encode(array(
             'msg' => "error"
         ));
     }
+
     //var_dump($_FILES['image']);
 } catch (\Throwable $th) {
     throw $th;
