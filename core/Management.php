@@ -17,15 +17,16 @@ function setUsersInfo($isBan){
     $result = $conn->select($sqlGetUsers);
     return $result;
 }
-function getUserDetail($userID){
+function getOrder($userID){
     $conn = new DB();
-    $sqlGetDetail = <<<block
+    $sqlGetOrder = <<<block
         select *
-        from userDetail where userID = $userID;
+        from `order` where userID = $userID;
         block;
-    $result = $conn->select($sqlGetDetail);
+    $result = $conn->select($sqlGetOrder);
     return $result;
 }
+
 header('Content-Type: application/json; charset=UTF-8');
 if ($_SERVER['REQUEST_METHOD'] == "GET") {
     $result = getUsersInfo();
@@ -61,8 +62,8 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
             'errorMsg' => "查詢失敗,ERROR CODE:2"
         ));
     }        
-}else  if($_SERVER['REQUEST_METHOD'] == "POST" && $_POST['action']=="checkDetail") {    
-    $result = getUserDetail($_POST['usersID']);
+}else  if($_SERVER['REQUEST_METHOD'] == "POST" && $_POST['action']=="getOrder") {    
+    $result = getOrder($_POST['usersID']);
     if ($result) {       
         echo json_encode(array(
             'detail' => $result

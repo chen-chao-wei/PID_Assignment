@@ -231,13 +231,13 @@
                             console.log("row", rowCount);
                         }
                         $("#commodity-group-" + rowCount).append(`
-                        <div id="commodity-card-${i}"class="card " value="${i}" onclick="clickCard(this)">
+                        <div id="commodity-card-${i}"class="card " value="${i+1}" onclick="clickCard(this)">
                         <img id ="commodity-img-${i}" class="card-img-top" src="..." alt="Card image cap">
                         <div id ="commodity-body-${i}" class="card-body">
                             <h5 class="card-title" value="">商品名稱</h5>
                             <p class="card-text">商品描述</p>
                             <p class="card-text">1</p>
-                            <p class="card-text"><small class="text-muted">已售出 ４</small></p>
+                            <p class="card-text"><small class="text-muted">已售出</small></p>
                         </div>
                         </div>`)
                         if (i < count - 1) {
@@ -246,11 +246,11 @@
                             //console.log("doCommodityCard", count);
                         }
                         $("#commodity-img-" + i).attr("src", "data:image/jpeg;base64," + data[i]['img']);
-                        $("#commodity-body-" + i + " h5").text(data[i]['name']);
+                        $("#commodity-body-" + i + " h5").text("產品名稱:"+data[i]['name']);
                         $("#commodity-body-" + i + " h5").attr("value",data[i]['commodityID']);
-                        $("#commodity-body-" + i + " p:first").text(data[i]['description']);
+                        $("#commodity-body-" + i + " p:first").text("商品介紹:"+data[i]['description']);
                         $("#commodity-body-" + i + " p:nth-child(3)").text("$" + data[i]['price']);
-                        $("#commodity-body-" + i + " p").children(1).text(data[i]['quantity']);
+                        $("#commodity-body-" + i + " p").children(1).text("存貨"+data[i]['quantity']);
 
 
 
@@ -264,7 +264,7 @@
             clickCard = function(obj) {
                 console.log("clickCard", $(obj).attr("value"));//children(1)[1].childNodes[1].attributes[1]).attr("value"
                 value = $(obj).attr("value");
-                if (buy()) {
+                if (checkAdd()) {
                     $.ajax({
                         url: '/PID_Assignment/core/upload.php',
                         type: 'POST',
@@ -272,13 +272,18 @@
                         data:{
                             action:"addToShopCart",
                             commodityID:value,
-                            userID:1
+                            userID:1,
+                            quantity:1
                         },
                         success: function(data) {
                             //$("#showBox").attr("src", data.src);
-                            if (data.msg != undefined) {                                
-                                console.log(data.msg);                                
+                            if (data.errorMsg != undefined) {  
+                                alert(data.errorMsg);                              
+                                console.log(data.errorMsg);                                
+                            }else{
+                                alert(data.successMsg);
                             }
+                            
                         },
                         error: function(jqXHR) {
                             console.log(jqXHR);
@@ -287,7 +292,7 @@
                 }
             }
 
-            function buy() {
+            function checkAdd() {
                 var msg = "放入購物車？"
                 if (confirm(msg) == true) {
                     return true;

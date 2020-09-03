@@ -1,48 +1,154 @@
 <?php
 include_once 'Database.php';
-
-function getCommodity()
+function imgToBase64($date)
+{
+    foreach ($date as $key => $item) {
+        $date[$key]['img'] = base64_encode($item['img']);
+    }
+    return $date;
+}
+//$isImg 判斷是否GET IMAGE
+function getCommodity($isImg,$userID,$commodityID)
 {
     $conn = new DB();
-    $sqlGetCommodity = <<<block
-        select name ,commodityID,category ,quantity,price,description,img  from commodity ;
+    if($isImg){
+        $sqlGetCommodity = <<<block
+        select userID,name ,commodityID,category ,quantity,price,description,img  from commodity ;
         block;
-    $result = $conn->select($sqlGetCommodity);
-    foreach ($result as $key => $item) {
-        $result[$key]['img'] = base64_encode($item['img']);
+    }else{
+        $sqlGetCommodity = <<<block
+        select userID,name ,commodityID,category ,quantity,price,description  
+        from commodity where userID=$userID and commodityID = $commodityID;
+        block;
     }
+    
+    $result = $conn->select($sqlGetCommodity);
+    if($isImg){
+        foreach ($result as $key => $item) {
+            $result[$key]['img'] = base64_encode($item['img']);
+        }
+    }
+    
     return $result;
 }
-function setShopCart($userID, $commodityID, $actionName)
+function setCommodity($userID,$commodityID,$quantitySold){
+    $conn = new DB();
+    $srcCommodity = getCommodity(false,$userID,$commodityID);
+    $dstCommodity = $srcCommodity[0]['quantity']-$quantitySold;
+    if($dstCommodity<0){
+        return false;
+    }
+    $quantitySold += $quantitySold;
+    $sqlSetCommodity = <<<block
+        UPDATE `Commodity` SET quantity = $dstCommodity,quantitySold = $quantitySold
+        WHERE userID = $userID and commodityID = $commodityID;
+    block;
+    $conn->select($sqlSetCommodity);
+    return true;
+}
+function setShopCart($userID, $commodityID, $quantity)
 {
     $conn = new DB();
-    $sqlGetCommodity = <<<block
-        select name ,commodityID,category ,quantity,price,description  
-        from commodity where commodityID = $commodityID;
-        block;
-    $commodityInfo = $conn->select($sqlGetCommodity);
+    $commodityInfo = getCommodity(false,$userID,$commodityID);
     $setShopCart = <<<block
-        insert into  userDetail (userID,actionName,amount,status,
-        sellerID) values($userID,"buy",{$commodityInfo[0]['price']},
-        "OK",$userID)
+        insert into  shopCart (userID,sellerID,commodityID,quantity,price) 
+        values($userID,{$commodityInfo[0]['userID']},{$commodityInfo[0]['commodityID']},$quantity,{$commodityInfo[0]['price']});
         block;
     $conn->select($setShopCart);
+}
+function delShopCart($userID, $commodityID)
+{
+    $conn = new DB();
+
+    $sqlDelShopCart = <<<block
+        DELETE FROM shopCart WHERE userID = $userID && commodityID = $commodityID;
+        block;
+    $conn->delete($sqlDelShopCart);
 }
 function getShopCart($userID)
 {
     $conn = new DB();
     $sqlGetShopCarty = <<<block
-        select * from userDetail where userID = $userID;
+        select LPAD(s.userID,10,0)as userID,LPAD(s.sellerID,10,0)as sellerID,
+        LPAD(s.commodityID,10,0)as commodityID,c.name,SUM(s.quantity)as quantity,s.price,c.img from shopcart s 
+        inner join commodity c
+        on c.commodityID = s.commodityID 
+        where s.userID = $userID and s.quantity>0
+        GROUP by s.userID,s.commodityID;
         block;
     $result = $conn->select($sqlGetShopCarty);
-
+    $result = imgToBase64($result);
     return $result;
+}
+function setUserDetail()
+{
+    $conn = new DB();
+
+    $sqlSetUserDetail = <<<block
+        insert into  `userDetail` (userID,orderID,commodityID,quantity,price) 
+        values
+        block;
+    $conn->insert($sqlSetUserDetail);
+}
+function setInventory($userID,$commodityID,$quantity,$quantitySold)
+{
+    $conn = new DB();
+    $quantity -= $quantitySold;
+    $sqlSetInventory = <<<block
+        UPDATE `Inventory` SET userID = $userID, commodityID = $commodityID,
+                               quantity = $quantity,quantitySold = $quantitySold
+        WHERE userID = $userID, commodityID = $commodityID;
+        block;
+    $conn->update($sqlSetInventory);
+}
+function setOrder($userID, $commodityID)
+{
+    $conn = new DB();
+    $shopCart = getShopCart($userID);
+
+    $sqlGetPreOrderID = <<<block
+        SELECT orderID FROM `order`  ORDER BY orderID DESC LIMIT 0 , 1
+        block;   
+    $preOrderID = $conn->select($sqlGetPreOrderID); 
+    ($preOrderID==null)?$preOrderID=0:$preOrderID=$preOrderID[0]['orderID']; 
+    $orderID = $preOrderID+1;  
+    $sqlSetOrder = <<<block
+        insert into  `order` (orderID,userID,sellerID,commodityID,quantity,price) 
+        values
+        block;
+    $shopCartIdx = null;
+    $orderID = $preOrderID+1;
+    foreach ($commodityID as $key => $item) {
+        foreach ($shopCart as $key2 => $item2) {
+            if ($item2['commodityID'] == $item) {
+                $shopCartIdx = $key2;
+                break;
+            }
+        }
+        $sellerID = $shopCart[$shopCartIdx]['sellerID'];
+        $quantity = $shopCart[$shopCartIdx]['quantity'];
+        $price = $shopCart[$shopCartIdx]['price'];
+        $sqlSetOrder .= "($orderID,$userID,$sellerID,$item,$quantity,$price),";
+        
+        if(setCommodity($userID,$item,$quantity)){
+            delShopCart($userID,$item);
+        }else{
+            delShopCart($userID,$item);
+            return "抱歉，目前存貨不足。";
+        }
+        
+    }
+    $sqlSetOrder = substr($sqlSetOrder, 0, -1);
+    $sqlSetOrder .= ";";
+    $conn->select($sqlSetOrder);
+    return true;
+    
 }
 try {
 
     //取得上傳檔案資訊
     if ($_SERVER['REQUEST_METHOD'] == "GET") {
-        $result = getCommodity();
+        $result = getCommodity(true,"","");
         if ($result) {
             echo json_encode(array(
                 'commodityData' => $result
@@ -185,11 +291,18 @@ try {
             ));
         }
     } else if ($_SERVER['REQUEST_METHOD'] == "POST" && $_POST['action'] == "addToShopCart") {
-        setShopCart($_POST['userID'], $_POST['commodityID'], "buy");
+        if ($_POST['quantity'] < 0) {
+            echo json_encode(array(
+                'errorMsg' =>  "商品數量錯誤"
+            ));
+            return;
+        }
+        setShopCart($_POST['userID'], $_POST['commodityID'], $_POST['quantity']);
         echo json_encode(array(
-            'msg' => "OK"
+            'successMsg' => "OK"
         ));
     } else if ($_SERVER['REQUEST_METHOD'] == "POST" && $_POST['action'] == "checkShopCart") {
+
         $result = getShopCart($_POST['userID']);
         if ($result) {
             echo json_encode(array(
@@ -200,6 +313,25 @@ try {
                 'errorMsg' => "ERROR"
             ));
         }
+    } else if ($_SERVER['REQUEST_METHOD'] == "POST" && $_POST['action'] == "buy") {
+
+        // if($_POST['quantity']<0){
+        //     echo json_encode(array(
+        //         'errorMsg' =>  "商品數量錯誤"
+        //     ));
+        //     return ;
+        // }
+        $result = setOrder($_POST['userID'], $_POST['commodityID']);
+        if($result===true){
+            echo json_encode(array(
+                'successMsg' => "OK"
+            ));
+        }else{
+            echo json_encode(array(
+                'errorMsg' => $result
+            ));
+        }
+        
     } else {
         echo json_encode(array(
             'msg' => "error"

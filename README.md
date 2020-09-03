@@ -31,4 +31,4 @@
     - 固定搜尋列
   - 購物車  
   ![image](https://github.com/weichen-chungyo/PID_Assignment/blob/master/viewImages/0903.png)
-### TODO: 購物車,session,資料庫
+### TODO: 購物車,session,資料庫,訂單管理

@@ -6,8 +6,8 @@ class DB {
   function __construct(){
     try {
       $this->pdo = new PDO(
-        "mysql:host=localhost:8889;dbname=pid;charset=utf8", 
-        "root", "root", [
+        "mysql:host=localhost:3306;dbname=pid;charset=utf8", 
+        "root", "", [
           PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
           PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
           PDO::ATTR_EMULATE_PREPARES => false,
@@ -40,6 +40,14 @@ class DB {
     return $result;
   }
   function update($sql, $cond=null){
+    $result = false;
+    try {      
+      $result = $this->pdo->query($sql);
+    } catch (Exception $ex) { die($ex->getMessage()); }
+    $this->stmt = null;
+    return $result;
+  }
+  function delete($sql, $cond=null){
     $result = false;
     try {      
       $result = $this->pdo->query($sql);

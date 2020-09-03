@@ -28,7 +28,7 @@
                     <li class="nav-item dropdown ml-md-auto">
                         <div class="row">
                             <a class="nav-link " href="#"> 幫助中心</a>
-                            <a class="nav-link " href="/PID_Assignment/home/login" id="navbarMenuLink" >登入 / 註冊</a>
+                            <a class="nav-link " href="/PID_Assignment/home/login" id="navbarMenuLink">登入 / 註冊</a>
                         </div>
                         <div class="col">
 
@@ -157,7 +157,7 @@
         $('#v-pills-profile-tab').on('click', function(e) {
             e.preventDefault()
             $('usersManagement').empty();
-                        
+
         })
         window.onbeforeunload = function(e) {
             e = e || window.event;
@@ -187,6 +187,8 @@
                             doMemberTable(data.users);
                             //console.log(data.users);
                             //console.log(data.users[1]['account']);
+                        } else {
+                            doMemberTable(data.users);
                         }
                     },
                     error: function(jqXHR) {
@@ -485,14 +487,14 @@
                     data: {
                         usersID: id,
                         checkDetail: 1, //$("#tab-info input:nth-child(odd)")
-                        action: "checkDetail"
+                        action: "getOrder"
                     },
                     success: function(data) {
                         if (data.detail) {
                             console.log(data.detail);
                             doDetailTable($("#tr-member" + id), data.detail);
                             //doMemberTable(data.detail);
-                            
+
                         } else {
                             alert(data.errorMsg);
                             console.log(data.errorMsg);
@@ -517,13 +519,13 @@
                     $("<table id='tab-detail'></table>")
                     .addClass("table ")
                     .append($('<thead></thead>').append(`<tr><th scope="col">訂單編號</th><th scope="col">會員帳號</th>
-                    <th scope="col">時間</th><th scope="col">操作</th><th scope="col">金額</th><th scope="col">狀態</th><th scope="col">賣家</th></tr>`))
+                    <th scope="col">時間</th><th scope="col">品項</th><th scope="col">金額</th><th scope="col">狀態</th><th scope="col">賣家</th></tr>`))
                 );
                 $("#usersManagement").append(rowElements);
                 $.each(data, function(key, value) {
                     console.log(value['userID']);
                     var tableElements = $(`<tr id='detail'><td>${value['inventoryID']}</td><td>${value['account']}</td>
-                     <td>${value['datatime']}</td><td>${value['actionName']}</td><td>${value['amount']}</td>
+                     <td>${value['datatime']}</td><td>${value['actionName']}</td><td>${value['price']}</td>
                      <td>${value['status']}</td><td>${value['sellerID']}</td></tr>`);
                     tableElements.appendTo("#tab-detail");
                     // idx.after(`<tr id='detail'><td>${value['userID']}</td><td>${value['account']}</td>
@@ -545,19 +547,24 @@
                 );
                 $("#usersManagement").append(rowElements);
                 var count = 0;
-                for (let i = 0; i < data.length; i++) {
-                    let banHtml;
-                    if (data[i]['ban'] == 'N') {
-                        banHtml = `<input id='ban${count}' type='radio' value='Y' name='ban${i}'>是<input id='ban${count+1}' type='radio' value='N' name='ban${i}' checked>否`
-                    } else {
-                        banHtml = `<input id='ban${count}' type='radio' value='Y' name='ban${i}' checked>是<input id='ban${count+1}' type='radio' value='N' name='ban${i}'>否`
-                    }
-                    count += 2;
+                if (data) {
+                    for (let i = 0; i < data.length; i++) {
+                        let banHtml;
+                        if (data[i]['ban'] == 'N') {
+                            banHtml = `<input id='ban${count}' type='radio' value='Y' name='ban${i}'>是<input id='ban${count+1}' type='radio' value='N' name='ban${i}' checked>否`
+                        } else {
+                            banHtml = `<input id='ban${count}' type='radio' value='Y' name='ban${i}' checked>是<input id='ban${count+1}' type='radio' value='N' name='ban${i}'>否`
+                        }
+                        count += 2;
 
-                    var tableElements = $("<tr id=tr-member" + data[i]['userID'] + "><td>" + data[i]['userID'] + "</td><td>" + data[i]['account'] + "</td>" +
-                        "<td>" + data[i]['personID'] + "</td>" + "<td>" + banHtml + "</td><td>" + "<button id=checkDetailButton type ='button' onclick='checkDetail(this)' value=" + data[i]['userID'] + ">詳細明細</button>" + "</td></tr>")
-                    tableElements.appendTo("#tab-info");
+                        var tableElements = $("<tr id=tr-member" + data[i]['userID'] + "><td>" + data[i]['userID'] + "</td><td>" + data[i]['account'] + "</td>" +
+                            "<td>" + data[i]['personID'] + "</td>" + "<td>" + banHtml + "</td><td>" + "<button id=checkDetailButton type ='button' onclick='checkDetail(this)' value=" + data[i]['userID'] + ">詳細明細</button>" + "</td></tr>")
+                        tableElements.appendTo("#tab-info");
+                    }
+                }else{
+                    $("#tab-info").append("<h1>查無會員</h1>");
                 }
+
                 console.log($("#tab-info input:nth-child(odd)").length);
 
             }
@@ -591,7 +598,7 @@
                     success: function(data) {
                         if (data.users) {
                             $("#usersManagement").empty();
-                            
+
                             doMemberTable(data.users);
                             alert("操作成功");
                         }
