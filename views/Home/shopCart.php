@@ -162,7 +162,7 @@
                     $('#' + idName + ' #list-body-info').append(`
                     <label>賣家編號:</label><span class="userID">${sellerID}</span><br>
                     <label>商品名稱:</label><span class="datatime">${name}</span><br>
-                    <label>價格:</label><span id="price" value ="${price}" class="price">${price}</span><br>
+                    <label>價格:</label><span id="price${commodityID}" value ="${price}" class="price">${price}</span><br>
                     <label>數量:&nbsp;</label><button id="minus" name = "${commodityID}"value="${quantity}"onclick="minus(this)">-</button><input class="w-25" id="inputQuantity${commodityID}" type="text" value="${quantity}" onkeyup="value=value.replace(/[^\\d]/g,'')"><button id="plus" name = "${commodityID}"value="${quantity}"onclick="plus(this)">+</button><br>
                     <label>售出:</label><span class="sellerID">${sellerID}</span>`);
                     $('#' + idName + ' #list-footer').append(`
@@ -177,8 +177,8 @@
                     let value = ++obj.value;
                     let $inputQuantity = obj.name;
                     $("#inputQuantity"+obj.name).val(value);
-                    price = $("#price").attr("value");
-                    $("#price").text(price*value);
+                    price = $("#price"+obj.name).attr("value");
+                    $("#price"+obj.name).text(price*value);
                     //console.log("plus",value,$(obj.name));
                 }
                 minus = function(obj){
@@ -186,8 +186,8 @@
                     (value<0)?value=0:value=value;
                     let $inputQuantity = obj.name;
                     $("#inputQuantity"+obj.name).val(value);
-                    price = $("#price").attr("value");
-                    $("#price").text(price*value);
+                    price = $("#price"+obj.name).attr("value");
+                    $("#price"+obj.name).text(price*value);
                     //console.log("plus",value,$(obj.name));
                 }
                 

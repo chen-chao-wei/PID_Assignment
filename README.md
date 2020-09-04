@@ -32,12 +32,13 @@
   - 購物車  
   ![image](https://github.com/weichen-chungyo/PID_Assignment/blob/master/viewImages/0903.png)
 ### TODO: 購物車,session,資料庫,訂單管理
-## 0903
+## 0904
   - 購物車
   - 資料庫
   - 訂單管理
   - seesion
   - 買賣方身份
   - 選擇商品數量
-  ![image](https://github.com/weichen-chungyo/PID_Assignment/blob/master/viewImages/0903.png)
+    - 及時改變金額
+  ![image](https://github.com/weichen-chungyo/PID_Assignment/blob/master/viewImages/0904.jpg)
 ### TODO: 報表,UI,
