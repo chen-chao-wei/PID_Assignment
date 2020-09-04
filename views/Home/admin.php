@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,9 +10,9 @@
     <link href="/PID_Assignment/css/style.css" rel="stylesheet">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <title>mall</title>
-    <script src="../js/jquery.js"></script>
-    <script src="../js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../js/jquery.toast.js"></script>
+    <script src="/PID_Assignment/js/jquery.js"></script>
+    <script src="/PID_Assignment/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/PID_Assignment/js/jquery.toast.js"></script>
 </head>
 
 <body>
@@ -49,7 +50,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-7">
                 <div class="row">
                     <div class="col">
                         <div class="tab-content" id="v-pills-tabContent">
@@ -133,7 +134,7 @@
                 </div>
 
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div id="listDiv">
 
                 </div>
@@ -215,11 +216,9 @@
                 files.append('quantity', quantity);
                 files.append('price', price);
                 files.append('description', description);
-                files.append('image', input);
-                sql = `insert into commodity(userID,name,category,quantity,price,description,img) 
-                values(1,'${name}','${category}',
-                ${quantity},${price},'${description}','${input}');`;
-                console.log(sql);
+                files.append('image', input);                
+                
+                
                 //files.append('formData', formData); 
                 //console.log(name);
                 $.ajax({
@@ -518,16 +517,34 @@
                 rowElements.push(
                     $("<table id='tab-detail'></table>")
                     .addClass("table ")
-                    .append($('<thead></thead>').append(`<tr><th scope="col">訂單編號</th><th scope="col">會員帳號</th>
-                    <th scope="col">時間</th><th scope="col">品項</th><th scope="col">金額</th><th scope="col">狀態</th><th scope="col">賣家</th></tr>`))
+                    .append($('<thead></thead>').append(`<tr><th scope="col">訂單編號</th><th scope="col">
+                    時間</th><th scope="col">品項</th><th scope="col">單價</th><th scope="col">金額</th>
+                    <th scope="col">狀態</th><th scope="col">賣家</th></tr>`))
                 );
                 $("#usersManagement").append(rowElements);
+                let nowOrderID=0;
+                let total=0;
+                console.log(data.length);
+                count = data.length-1;
                 $.each(data, function(key, value) {
-                    console.log(value['userID']);
-                    var tableElements = $(`<tr id='detail'><td>${value['inventoryID']}</td><td>${value['account']}</td>
-                     <td>${value['datatime']}</td><td>${value['actionName']}</td><td>${value['price']}</td>
-                     <td>${value['status']}</td><td>${value['sellerID']}</td></tr>`);
+                    total+=value['amount'];
+                    nowOrderID = value['orderID'];
+                    
+                    var tableElements = $(`<tr id='detail'><td>${value['orderID']}</td>
+                     <td>${value['datatime']}</td><td>${value['name']}</td><td>${value['price']}</td>
+                     <td>${value['amount']}</td><td>未出貨</td><td>${value['sellerID']}</td></tr>`);
                     tableElements.appendTo("#tab-detail");
+                    if(key!=count){
+                        if(nowOrderID!=data[key+1]['orderID']){
+                        let tableTotal = $(`<tr><td>總計</td><td></td><td></td><td></td><td>${total}</td><td></td><td></td></tr>`);
+                        tableTotal.appendTo("#tab-detail");
+                        total=0; 
+                        }
+                    }else{
+                        let tableTotal = $(`<tr class="tableTotal"><td>總計</td><td></td><td></td><td></td><td>${total}</td><td></td><td></td></tr>`);
+                        tableTotal.appendTo("#tab-detail");
+                    }                    
+                    
                     // idx.after(`<tr id='detail'><td>${value['userID']}</td><td>${value['account']}</td>
                     // <td>${value['datatime']}</td><td>${value['actionName']}</td><td>${value['amount']}</td>
                     // <td>${value['status']}</td><td>${value['sellerID']}</td></tr>`);

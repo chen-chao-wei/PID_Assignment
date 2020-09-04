@@ -9,6 +9,11 @@
     // }
     class Users extends DB{
         public $name;
+        private $id = null;
+        public function getId(){
+            return $this->id;
+        }
+        
         public $flag;
         //檢查註冊資料
         function register($acct,$pass,$ID){            
@@ -39,17 +44,31 @@
           }
         //驗證帳密
         function loginVerify($userName,$userPass){
-            $hash = $this->select("SELECT password ,ban FROM `users` WHERE account = '$userName'");            
-            if($hash[0]['ban']=="N"){
-                if(isset($hash[0]['password'])){
-                    return (password_verify($userPass, $hash[0]['password']))?1:0;
-                }                
+            $hash = $this->select("SELECT userID,password,identity ,ban FROM `users` WHERE account = '$userName'");            
+            if(count($hash)){
+                if($hash[0]['ban']=="N"){
+                    if(isset($hash[0]['password'])){
+                        return (password_verify($userPass, $hash[0]['password']))?1:0;
+                    }                
+                }
+                else{
+                    return -1;
+                }
+            }else{
+                return 2;
             }
-            else{
-                return -1;
-            }
-            
-            
+        }
+        function getUserID($userName,$userPass){
+            $userInfo = $this->select("SELECT userID,password,identity ,ban FROM `users` WHERE account = '$userName'");            
+            if(isset($userInfo[0]['password'])){
+                return (password_verify($userPass, $userInfo[0]['password']))?$userInfo[0]['userID']:false;
+            } 
+        }
+        function getIdentity($userName,$userPass){
+            $userInfo = $this->select("SELECT userID,password,identity ,ban FROM `users` WHERE account = '$userName'");            
+            if(isset($userInfo[0]['password'])){
+                return (password_verify($userPass, $userInfo[0]['password']))?$userInfo[0]['identity']:false;
+            } 
         }
     }
 ?>

@@ -19,10 +19,15 @@ function setUsersInfo($isBan){
 }
 function getOrder($userID){
     $conn = new DB();
+    
     $sqlGetOrder = <<<block
-        select *
-        from `order` where userID = $userID;
-        block;
+        SELECT o.orderID,o.datatime,c.userID as sellerID,o.commodityID,c.name ,o.quantity,o.price,o.quantity*o.price as amount
+        FROM 	`order` o 
+        INNER JOIN commodity c
+        ON o.commodityID = c.commodityID
+        where o.userID = $userID
+        GROUP by o.orderID,o.datatime,o.commodityID,c.name ,o.quantity,o.price;
+    block;
     $result = $conn->select($sqlGetOrder);
     return $result;
 }

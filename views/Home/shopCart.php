@@ -28,7 +28,13 @@
                     <li class="nav-item dropdown ml-md-auto">
                         <div class="row">
                             <a class="nav-link " href="#"> 幫助中心</a>
-                            <a class="nav-link " href="/PID_Assignment/home/login" id="navbarMenuLink">登入 / 註冊</a>
+                            <?php 
+                                if(!isset($_SESSION["userName"]) || ($_SESSION["userName"]=="")){
+                                    echo '<a class="header-link nav-link " href="/PID_Assignment/home/login" id="navbarMenuLink">登入 / 註冊</a>';
+                                }else{
+                                    echo '<a class="header-link nav-link " href="/PID_Assignment/home/login" id="navbarMenuLink">'.$_SESSION['userName'].'/ 登出</a>';
+                                }
+                            ?>
                         </div>
                         <div class="col">
 
@@ -44,8 +50,8 @@
             <div class="col-md-2">
                 <div class="col">
                     <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                        <a class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">會員管理</a>
-                        <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="false">我的商品</a>
+                        <a class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">我的購物車</a>
+                        <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="false">歷史紀錄</a>
                     </div>
                 </div>
             </div>

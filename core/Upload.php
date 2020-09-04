@@ -1,4 +1,5 @@
 <?php
+session_start();
 include_once 'Database.php';
 function imgToBase64($date)
 {
@@ -13,11 +14,11 @@ function getCommodity($isImg,$userID,$commodityID)
     $conn = new DB();
     if($isImg){
         $sqlGetCommodity = <<<block
-        select userID,name ,commodityID,category ,quantity,price,description,img  from commodity ;
+        select userID,name ,commodityID,category ,quantity,quantitySold,price,description,img  from commodity ;
         block;
     }else{
         $sqlGetCommodity = <<<block
-        select userID,name ,commodityID,category ,quantity,price,description  
+        select userID,name ,commodityID,category ,quantity,quantitySold,price,description  
         from commodity where userID=$userID and commodityID = $commodityID;
         block;
     }
@@ -34,13 +35,13 @@ function getCommodity($isImg,$userID,$commodityID)
 function setCommodity($userID,$commodityID,$quantitySold){
     $conn = new DB();
     $srcCommodity = getCommodity(false,$userID,$commodityID);
-    $dstCommodity = $srcCommodity[0]['quantity']-$quantitySold;
-    if($dstCommodity<0){
+    $dstQommodity = $srcCommodity[0]['quantity']-$quantitySold;
+    if($dstQommodity<0 ){
         return false;
     }
-    $quantitySold += $quantitySold;
+    $dstQuantitySold = $srcCommodity[0]['quantitySold'] += $quantitySold;
     $sqlSetCommodity = <<<block
-        UPDATE `Commodity` SET quantity = $dstCommodity,quantitySold = $quantitySold
+        UPDATE `Commodity` SET quantity = $dstQommodity,quantitySold = $dstQuantitySold
         WHERE userID = $userID and commodityID = $commodityID;
     block;
     $conn->select($sqlSetCommodity);
@@ -69,12 +70,13 @@ function getShopCart($userID)
 {
     $conn = new DB();
     $sqlGetShopCarty = <<<block
-        select LPAD(s.userID,10,0)as userID,LPAD(s.sellerID,10,0)as sellerID,
-        LPAD(s.commodityID,10,0)as commodityID,c.name,SUM(s.quantity)as quantity,s.price,c.img from shopcart s 
-        inner join commodity c
-        on c.commodityID = s.commodityID 
-        where s.userID = $userID and s.quantity>0
-        GROUP by s.userID,s.commodityID;
+        SELECT LPAD(s.userID,10,0)as userID,LPAD(s.sellerID,10,0)as sellerID,
+        LPAD(s.commodityID,10,0)as commodityID,c.name,SUM(s.quantity)as quantity,s.price,c.img 
+        FROM shopcart s 
+        INNER JOIN commodity c
+        ON c.commodityID = s.commodityID 
+        WHERE s.userID = $userID and s.quantity>0
+        GROUP BY s.userID,s.sellerID,s.commodityID,s.price;
         block;
     $result = $conn->select($sqlGetShopCarty);
     $result = imgToBase64($result);
@@ -179,9 +181,9 @@ try {
         $conn = new DB();
         if ($_REQUEST['action'] == "upload" && $_FILES != null) {
             $sql = <<<block
-            insert into commodity(userID,name,category,quantity,price,description,img) 
+            insert into commodity(userID,name,category,quantity,quantitySold,price,description,img) 
             values({$_REQUEST['userID']},'{$_REQUEST['name']}','{$_REQUEST['category']}',
-                {$_REQUEST['quantity']},{$_REQUEST['price']},'{$_REQUEST['description']}','$file');
+                {$_REQUEST['quantity']},0,{$_REQUEST['price']},'{$_REQUEST['description']}','$file');
             block;
 
             $conn->insert($sql);
@@ -297,7 +299,8 @@ try {
             ));
             return;
         }
-        setShopCart($_POST['userID'], $_POST['commodityID'], $_POST['quantity']);
+        $sUserID = $_SESSION['userID'];
+        setShopCart($sUserID, $_POST['commodityID'], $_POST['quantity']);
         echo json_encode(array(
             'successMsg' => "OK"
         ));

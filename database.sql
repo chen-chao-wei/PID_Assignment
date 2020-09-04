@@ -1,6 +1,6 @@
 CREATE DATABASE PID;
 USE PID;
-CREATE TABLE `users` (userID int(10) ZEROFILL NOT NULL PRIMARY KEY AUTO_INCREMENT,account varchar(30),password varchar(60),personID varchar(30),ban enum ('Y','N') DEFAULT 'N' NOT NULL);
+CREATE TABLE `users` (userID int(10) ZEROFILL NOT NULL PRIMARY KEY AUTO_INCREMENT,account varchar(30),password varchar(60),personID varchar(30),ban enum ('Y','N') DEFAULT 'N' NOT NULL,identity int(1) NOT NULL);
 CREATE TABLE `userDetail`(userID int(10) ZEROFILL NOT NULL ,account varchar(30),orderID int(10) ZEROFILL NOT NULL,datatime timestamp  DEFAULT CURRENT_TIMESTAMP,actionName varchar(30),price int(30) UNSIGNED,status varchar(30),sellerID int(10) ZEROFILL NOT NULL);
 CREATE TABLE `commodity` (userID int(10) ZEROFILL NOT NULL,commodityID int(10) ZEROFILL NOT NULL PRIMARY KEY  AUTO_INCREMENT,datatime timestamp  DEFAULT CURRENT_TIMESTAMP,name varchar(30)NOT NULL,category varchar(30)NOT NULL,quantity int(10) UNSIGNED NOT NULL,quantitySold int(10) UNSIGNED NOT NULL,price int(10) UNSIGNED NOT NULL,description varchar(200),img longblob NOT NULL);
 CREATE TABLE `inventory` (userID int(10) ZEROFILL NOT NULL ,commodityID int(10) ZEROFILL NOT NULL ,quantity int(10) UNSIGNED NOT NULL,quantitySold int(10));

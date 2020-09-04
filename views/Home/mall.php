@@ -20,15 +20,28 @@
                         <a class="header-link nav-link active" href="/PID_Assignment/home/mall">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="header-link nav-link" href="/PID_Assignment/home/admin">賣家中心</a>
+                        <form id="admin" method="post" >
+                        <input type="submit" class="btn btn-link" style="margin: 2%;" value="賣家中心" />
+                            <!-- <a class="header-link nav-link" type="submit">賣家中心</a>     -->
+                            <input type="hidden" name="admin" value="true" />                         
+                        </form>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" href="#">Messages</a>
-                    </li>
+                    
                     <li class="nav-item dropdown ml-md-auto">
                         <div class="row">
                             <a class="header-link nav-link " href="#"> 幫助中心</a>
-                            <a class="header-link nav-link " href="/PID_Assignment/home/login" id="navbarMenuLink">登入 / 註冊</a>
+                            <form id="logout" method="post" >
+                            
+                            <input type="hidden" name="logout" value="true" />                            
+                            <?php                             
+                                if(!isset($_SESSION["userName"]) || ($_SESSION["userName"]=="")){
+                                    echo '<a class="header-link nav-link " href="/PID_Assignment/home/login" id="navbarMenuLink">登入 / 註冊</a>';
+                                }else{
+                                    echo '<a class="header-link nav-link "  id="navbarMenuLink">'.$_SESSION['userName'].'/ <input type="submit" class="pull-right btn btn-danger" style="margin: 2%;" value="登出" /></a>';
+                                }
+                                
+                            ?>
+                            </form>
                             <!-- <a class="nav-link">|</a>
                         <a class="nav-link " href="/PID_Assignment/home/login" id="navbarMenuLink" >登入</a> -->
                         </div>
@@ -46,8 +59,8 @@
                 </ul>
                 <nav class="navbar navbar-expand-lg navbar-light ">
 
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                        <span class="navbar-toggler-icon"></span>
+                    <button style="color:white;border-color:white;" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="fa fa-bars"></span>
                     </button> <a class="" href="#"> <i class="fa fa-shopping-bag" aria-hidden="true"></i> 調皮購物</a>
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
@@ -70,61 +83,43 @@
         </div>
         <div id="div-carousel" class="content row">
             <div class="carousel slide" style="padding-bottom: 1%;" id="carousel-46838">
-                <ol class="carousel-indicators">
-                    <li data-slide-to="0" data-target="#carousel-46838">
-                    </li>
-                    <li data-slide-to="1" data-target="#carousel-46838" class="active">
-                    </li>
-                    <li data-slide-to="2" data-target="#carousel-46838">
-                    </li>
+                <ol id="carousel-indicators" class="carousel-indicators">
+                    <!-- <li data-slide-to="0" data-target="#carousel-46838" class="active">
+                    </li>                     -->
                 </ol>
-                <div class="carousel-inner">
-                    <div class="carousel-item">
+                <div id="carousel-inner" class="carousel-inner">
+                    <!-- <div class="carousel-item active">
                         <img class="img-fluid d-block w-100" alt="Carousel Bootstrap First" src="\PID_Assignment\imgs\goods\train\1.jpg" />
                         <div class="carousel-caption">
                             <h4>
-                                First Thumbnail label
+                                名稱
                             </h4>
                             <p>
-                                Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
+                                描述
                             </p>
                         </div>
-                    </div>
-                    <div class="carousel-item active">
-                        <img class="d-block w-100" alt="Carousel Bootstrap Second" src="\PID_Assignment\imgs\goods\train\2.jpg" />
-                        <div class="carousel-caption">
-                            <h4>
-                                Second Thumbnail label
-                            </h4>
-                            <p>
-                                Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
-                            </p>
-                        </div>
-                    </div>
-                    <div class="carousel-item">
-                        <img class="d-block w-100" alt="Carousel Bootstrap Third" src="\PID_Assignment\imgs\goods\train\3.jpg" />
-                        <div class="carousel-caption">
-                            <h4>
-                                Third Thumbnail label
-                            </h4>
-                            <p>
-                                Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
-                            </p>
-                        </div>
-                    </div>
-                </div> <a class="carousel-control-prev" href="#carousel-46838" data-slide="prev"><span class="carousel-control-prev-icon"></span> <span class="sr-only">Previous</span></a> <a class="carousel-control-next" href="#carousel-46838" data-slide="next"><span class="carousel-control-next-icon"></span> <span class="sr-only">Next</span></a>
+                    </div> -->
+                </div>
+                <h1 ><a style="color: red;"class="carousel-control-prev" href="#carousel-46838" role="button" data-slide="prev">
+                    <span class="fa fa-arrow-circle-left" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                <a style="color: red;" class="carousel-control-next" href="#carousel-46838" role="button" data-slide="next">
+                    <span class="fa fa-arrow-circle-right" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                </a></h1>
+
             </div>
+        </div>       
+        <div id="section-header" style="height:100px"class="progress">
+            <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;height:100px ;margin:auto;padding-bottom: 1.25rem;background-clip:content-box;"><h1>商品分類</h1></div>
+        </div>       
+        <div id="welcome-pakage" style="height:150px"class="progress">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;height:150px ;margin:auto;padding-bottom: 1.25rem;background-clip:content-box;"><h1>我是廣告</h1></div>
         </div>
-        <div id="section-header" class="row div-in " style="background-color:gray;margin:auto;padding-bottom: 1.25rem;background-clip:content-box;">
-            <label>商品分類</label>
-        </div>
-        <div id="welcome-pakage" class="row" style="background-color:#925959;margin:auto;padding-bottom: 1.25rem;background-clip:content-box;">
-            <label>廣告</label>
-        </div>
-        <div id="limitedTimeSale" class="carousel slide" data-wrap="false" data-ride="carousel" id="carousel-demo" style="margin:2%;">
+        <!-- <div id="limitedTimeSale" class="carousel slide" data-wrap="false" data-ride="carousel" id="carousel-demo" style="margin:2%;">
             <div id="carousel-header" class="row">
                 <label>限時特賣</label>
-
             </div>
             <div id="carousel-body" class="row">
                 <div class="carousel-inner">
@@ -147,12 +142,10 @@
                 </div>
             </div>
 
-        </div>
+        </div> -->
         <div id="commodity-group-0" class="card-group ">
         </div>
-        <!-- <div id="seeMore" class="row" style="padding-top:1.25rem;padding-bottom:1.25rem;">
-            <button>查看更多</button>
-        </div> -->
+        
         <div class="row">
             <hr width="100%" style="color:brown ;background-color:brown">
         </div>
@@ -217,40 +210,72 @@
                 $("#commodity-card").empty();
                 count = data.length;
                 rowCount = 0;
+                categoryID = 0;
+                categoryIDOneCount = 0;
+                categoryIDTwoCount = 0;
                 if (count > 1) {
 
                     for (let i = 0; i < count; i++) {
-                        let idName = "commodity-card-"
-                        let nextIdx = i + 1;
-                        let commodityImg = "#commodity-img-" + i;
-                        let commodityBody = $("#commodity-body-" + i);
-                        let commodityDiv =
-                            idName += i.toString();
-                        if (i > 0 && i % 5 == 0) {
-                            $("#commodity-group-" + rowCount).after(`<div id="commodity-group-${++rowCount}" class="card-group "></div>`)
-                            console.log("row", rowCount);
-                        }
-                        $("#commodity-group-" + rowCount).append(`
-                        <div id="commodity-card-${i}"class="card " value="${i+1}" onclick="clickCard(this)">
-                        <img id ="commodity-img-${i}" class="card-img-top" src="..." alt="Card image cap">
-                        <div id ="commodity-body-${i}" class="card-body">
+                        if (data[i]['category'] == "2") {
+                            let idName = "commodity-card-"
+                            let nextIdx = i + 1;
+                            let commodityImg = "#commodity-img-" + i;
+                            let commodityBody = $("#commodity-body-" + i);
+                            let commodityDiv =
+                                idName += i.toString();
+                            if (categoryIDOneCount > 0 && categoryIDOneCount % 5 == 0) {
+                                $("#commodity-group-" + rowCount).after(`<div id="commodity-group-${++rowCount}" class="card-group "></div>`)
+                                console.log("row", rowCount);
+                            }
+                            $("#commodity-group-" + rowCount).append(`
+                            <div id="commodity-card-${categoryIDOneCount}"class="card " value="${i+1}" onclick="clickCard(this)">
+                            <img id ="commodity-img-${categoryIDOneCount}" class="card-img-top" src="..." alt="Card image cap">
+                            <div id ="commodity-body-${categoryIDOneCount}" class="card-body">
                             <h5 class="card-title" value="">商品名稱</h5>
                             <p class="card-text">商品描述</p>
                             <p class="card-text">1</p>
                             <p class="card-text"><small class="text-muted">已售出</small></p>
-                        </div>
-                        </div>`)
-                        if (i < count - 1) {
-                            // var addCard = $("#commodity-card-" + i).clone(true).attr("id", "commodity-card-" + nextIdx)
-                            // $("#" + idName).after(addCard);
-                            //console.log("doCommodityCard", count);
+                            </div>
+                            </div>`)
+                            if (i < count - 1) {
+                                // var addCard = $("#commodity-card-" + i).clone(true).attr("id", "commodity-card-" + nextIdx)
+                                // $("#" + idName).after(addCard);
+                                //console.log("doCommodityCard", count);
+                            }
+                            $("#commodity-img-" + categoryIDOneCount).attr("src", "data:image/jpeg;base64," + data[i]['img']);
+                            $("#commodity-body-" + categoryIDOneCount + " h5").text("產品名稱:" + data[i]['name']);
+                            $("#commodity-body-" + categoryIDOneCount + " h5").attr("value", data[i]['commodityID']);
+                            $("#commodity-body-" + categoryIDOneCount + " p:first").text("商品介紹:" + data[i]['description']);
+                            $("#commodity-body-" + categoryIDOneCount + " p:nth-child(3)").text("$" + data[i]['price']);
+                            $("#commodity-body-" + categoryIDOneCount + " p").children(1).text("存貨" + data[i]['quantity']);
+                            categoryIDOneCount++;
+                        } else {
+                            console.log("docarousel");
+                            if (categoryIDTwoCount == 0) {
+                                $("#carousel-indicators").append(`
+                                <li data-slide-to="${categoryIDTwoCount}" data-target="#carousel-46838" class="active" >
+                                </li>`);
+                                $("#carousel-inner").append(`
+                                <div class="carousel-item active"  value="${i+1}"onclick="clickCard(this)">
+                                    <img class="d-block w-100 " alt="" src="data:image/jpeg;base64,${data[i]['img']}" />
+                                <div class="carousel-caption">
+                                <h4>產品名稱:${data[i]['name']}</h4><p>${data[i]['description']}</p>
+                                </div>
+                                </div>`);
+                            } else {
+                                $("#carousel-indicators").append(`
+                                <li data-slide-to="${categoryIDTwoCount}" data-target="#carousel-46838" >
+                                </li>`);
+                                $("#carousel-inner").append(` 
+                                <div class="carousel-item" value="${i+1}"onclick="clickCard(this)">
+                                    <img class="d-block w-100" alt="" src="data:image/jpeg;base64,${data[i]['img']}" />
+                                <div class="carousel-caption">
+                                <h4>產品名稱:${data[i]['name']}</h4><p>${data[i]['description']}</p>
+                                </div>
+                                </div>`);
+                            }
+                            categoryIDTwoCount += 1;
                         }
-                        $("#commodity-img-" + i).attr("src", "data:image/jpeg;base64," + data[i]['img']);
-                        $("#commodity-body-" + i + " h5").text("產品名稱:"+data[i]['name']);
-                        $("#commodity-body-" + i + " h5").attr("value",data[i]['commodityID']);
-                        $("#commodity-body-" + i + " p:first").text("商品介紹:"+data[i]['description']);
-                        $("#commodity-body-" + i + " p:nth-child(3)").text("$" + data[i]['price']);
-                        $("#commodity-body-" + i + " p").children(1).text("存貨"+data[i]['quantity']);
 
 
 
@@ -262,28 +287,29 @@
             }
             initCommodity();
             clickCard = function(obj) {
-                console.log("clickCard", $(obj).attr("value"));//children(1)[1].childNodes[1].attributes[1]).attr("value"
+                console.log("clickCard", $(obj).attr("value"));
+                
                 value = $(obj).attr("value");
                 if (checkAdd()) {
                     $.ajax({
                         url: '/PID_Assignment/core/upload.php',
                         type: 'POST',
                         dataType: "json",
-                        data:{
-                            action:"addToShopCart",
-                            commodityID:value,
-                            userID:1,
-                            quantity:1
+                        data: {
+                            action: "addToShopCart",
+                            commodityID: value,
+                            userID: 1,
+                            quantity: 1
                         },
                         success: function(data) {
                             //$("#showBox").attr("src", data.src);
-                            if (data.errorMsg != undefined) {  
-                                alert(data.errorMsg);                              
-                                console.log(data.errorMsg);                                
-                            }else{
+                            if (data.errorMsg != undefined) {
+                                alert(data.errorMsg);
+                                console.log(data.errorMsg);
+                            } else {
                                 alert(data.successMsg);
                             }
-                            
+
                         },
                         error: function(jqXHR) {
                             console.log(jqXHR);
