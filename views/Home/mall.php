@@ -37,7 +37,7 @@
                                 if(!isset($_SESSION["userName"]) || ($_SESSION["userName"]=="")){
                                     echo '<a class="header-link nav-link " href="/PID_Assignment/home/login" id="navbarMenuLink">登入 / 註冊</a>';
                                 }else{
-                                    echo '<a class="header-link nav-link "  id="navbarMenuLink">'.$_SESSION['userName'].'/ <input type="submit" class="pull-right btn btn-danger" style="margin: 2%;" value="登出" /></a>';
+                                    echo '<a class="header-link nav-link "  id="navbarMenuLink">'.$_SESSION['userName'].'/ <input type="submit" class="pull-right btn btn-link" style="margin: 2%;" value="登出" /></a>';
                                 }
                                 
                             ?>
@@ -73,7 +73,11 @@
                         </form>
                         <ul class="navbar-nav ml-md-auto">
                             <li class="nav-item active">
-                                <h3><a class="fa fa-shopping-cart header-link " href="/PID_Assignment/home/shopCart"> 購物車 <span class="sr-only">(current)</span></a></h3>
+                            <form id="shopCart" method="post" >
+                                <input type="submit" class="fa fa-shopping-cart header-link btn btn-link" style="margin: 2%;" value="購物車" />
+                                <input type="hidden" name="shopCart" value="true" />                         
+                            </form>
+                                <!-- <h3><a class="fa fa-shopping-cart header-link " href="/PID_Assignment/home/shopCart"> 購物車 <span class="sr-only">(current)</span></a></h3> -->
                             </li>
 
                         </ul>

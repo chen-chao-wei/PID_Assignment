@@ -37,5 +37,7 @@
   - 資料庫
   - 訂單管理
   - seesion
+  - 買賣方身份
+  - 選擇商品數量
   ![image](https://github.com/weichen-chungyo/PID_Assignment/blob/master/viewImages/0903.png)
-### TODO: seesion,買賣方身份,報表,UI,選擇商品數量
+### TODO: 報表,UI,

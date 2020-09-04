@@ -21,7 +21,11 @@
             <div class="col-md-12">
                 <ul class="nav">
                     <li class="nav-item">
-                        <a class="nav-link active" href="/PID_Assignment/home/admin">賣家中心</a>
+                        <form id="admin" method="post" >
+                        <input type="submit" class="btn btn-link" style="margin: 2%;" value="賣家中心" />
+                            <!-- <a class="header-link nav-link" type="submit">賣家中心</a>     -->
+                            <input type="hidden" name="admin" value="true" />                         
+                        </form>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/PID_Assignment/home/mall">回購物中心</a>

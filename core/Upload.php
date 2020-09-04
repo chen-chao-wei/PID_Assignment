@@ -19,7 +19,7 @@ function getCommodity($isImg,$userID,$commodityID)
     }else{
         $sqlGetCommodity = <<<block
         select userID,name ,commodityID,category ,quantity,quantitySold,price,description  
-        from commodity where userID=$userID and commodityID = $commodityID;
+        from commodity where commodityID = $commodityID;
         block;
     }
     
@@ -34,7 +34,7 @@ function getCommodity($isImg,$userID,$commodityID)
 }
 function setCommodity($userID,$commodityID,$quantitySold){
     $conn = new DB();
-    $srcCommodity = getCommodity(false,$userID,$commodityID);
+    $srcCommodity = getCommodity(false,"",$commodityID);
     $dstQommodity = $srcCommodity[0]['quantity']-$quantitySold;
     if($dstQommodity<0 ){
         return false;
@@ -50,7 +50,7 @@ function setCommodity($userID,$commodityID,$quantitySold){
 function setShopCart($userID, $commodityID, $quantity)
 {
     $conn = new DB();
-    $commodityInfo = getCommodity(false,$userID,$commodityID);
+    $commodityInfo = getCommodity(false,"",$commodityID);
     $setShopCart = <<<block
         insert into  shopCart (userID,sellerID,commodityID,quantity,price) 
         values($userID,{$commodityInfo[0]['userID']},{$commodityInfo[0]['commodityID']},$quantity,{$commodityInfo[0]['price']});
@@ -64,7 +64,7 @@ function delShopCart($userID, $commodityID)
     $sqlDelShopCart = <<<block
         DELETE FROM shopCart WHERE userID = $userID && commodityID = $commodityID;
         block;
-    $conn->delete($sqlDelShopCart);
+    return ($conn->delete($sqlDelShopCart))?true:false;
 }
 function getShopCart($userID)
 {
@@ -103,21 +103,19 @@ function setInventory($userID,$commodityID,$quantity,$quantitySold)
         block;
     $conn->update($sqlSetInventory);
 }
-function setOrder($userID, $commodityID)
+function setOrder($userID, $commodityID,$quantityArr)
 {
     $conn = new DB();
     $shopCart = getShopCart($userID);
-
+    
+    
     $sqlGetPreOrderID = <<<block
         SELECT orderID FROM `order`  ORDER BY orderID DESC LIMIT 0 , 1
         block;   
     $preOrderID = $conn->select($sqlGetPreOrderID); 
     ($preOrderID==null)?$preOrderID=0:$preOrderID=$preOrderID[0]['orderID']; 
     $orderID = $preOrderID+1;  
-    $sqlSetOrder = <<<block
-        insert into  `order` (orderID,userID,sellerID,commodityID,quantity,price) 
-        values
-        block;
+    
     $shopCartIdx = null;
     $orderID = $preOrderID+1;
     foreach ($commodityID as $key => $item) {
@@ -127,22 +125,28 @@ function setOrder($userID, $commodityID)
                 break;
             }
         }
+        $commodityInfo = getCommodity(false,"",$item);
         $sellerID = $shopCart[$shopCartIdx]['sellerID'];
-        $quantity = $shopCart[$shopCartIdx]['quantity'];
+        $quantity = $quantityArr[$key];
         $price = $shopCart[$shopCartIdx]['price'];
-        $sqlSetOrder .= "($orderID,$userID,$sellerID,$item,$quantity,$price),";
-        
-        if(setCommodity($userID,$item,$quantity)){
-            delShopCart($userID,$item);
+        $sqlSetOrder = <<<block
+        insert into  `order` (orderID,userID,sellerID,commodityID,quantity,price) 
+        values  ($orderID,$userID,$sellerID,$item,$quantity,$price);
+        block;
+    
+        if($commodityInfo[0]['quantity']<$quantity){
+            return "抱歉，目前存貨剩餘".$commodityInfo[0]['quantity']."。";
+        }
+        if(setCommodity($sellerID,$item,$quantity)){
+            if($conn->select($sqlSetOrder))
+                delShopCart($userID,$item);
         }else{
             delShopCart($userID,$item);
             return "抱歉，目前存貨不足。";
         }
         
-    }
-    $sqlSetOrder = substr($sqlSetOrder, 0, -1);
-    $sqlSetOrder .= ";";
-    $conn->select($sqlSetOrder);
+    }    
+    
     return true;
     
 }
@@ -213,7 +217,7 @@ try {
             ));
         }
     } else if ($_SERVER['REQUEST_METHOD'] == "POST" && $_POST['action'] == "showList") {
-        @$userID = $_POST["userID"];
+        @$userID = $_SESSION['userID'];
         if ($userID != null) {
             $conn        = new DB();
             $commodityID = array();
@@ -250,7 +254,7 @@ try {
             ));
         }
     } else if ($_SERVER['REQUEST_METHOD'] == "POST" && $_REQUEST['action'] == "insertForm") {
-        @$userID = $_POST["userID"];
+        @$userID = $_SESSION['userID'];
         @$commodityID = $_POST["commodityID"];
         if ($userID != null) {
             $conn        = new DB();
@@ -306,7 +310,7 @@ try {
         ));
     } else if ($_SERVER['REQUEST_METHOD'] == "POST" && $_POST['action'] == "checkShopCart") {
 
-        $result = getShopCart($_POST['userID']);
+        $result = getShopCart($_SESSION['userID']);
         if ($result) {
             echo json_encode(array(
                 'shopCartList' =>  $result
@@ -324,7 +328,7 @@ try {
         //     ));
         //     return ;
         // }
-        $result = setOrder($_POST['userID'], $_POST['commodityID']);
+        $result = setOrder($_SESSION['userID'], $_POST['commodityID'],$_POST['quantity']);
         if($result===true){
             echo json_encode(array(
                 'successMsg' => "OK"
@@ -335,6 +339,17 @@ try {
             ));
         }
         
+    } else if ($_SERVER['REQUEST_METHOD'] == "POST" && $_POST['action'] == "delShopCart") {
+        $result = delShopCart($_SESSION['userID'], $_POST['commodityID']);
+        if($result==true){
+            echo json_encode(array(
+                'successMsg' => "OK"
+            ));
+        }else{
+            echo json_encode(array(
+                'errorMsg' => $result
+            ));
+        }
     } else {
         echo json_encode(array(
             'msg' => "error"

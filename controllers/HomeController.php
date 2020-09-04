@@ -139,16 +139,58 @@ class HomeController extends Controller
                 }
             }
         }  
+        if (isset($_POST["shopCart"])) {
+            if (!isset($_SESSION["userID"]) || ($_SESSION["userID"] == "")) {
+                $this->Redirect("login");
+                exit();
+            } else {
+                $this->Redirect("shopCart");
+            }
+        }  
         $this->view("Home/mall");
     }
     function admin()
     {
-        
+        if (!isset($_SESSION["userID"]) || ($_SESSION["userID"] == "")) {
+            $this->Redirect("login");
+            exit();
+        } else {
+            if ($_SESSION['identity'] == "1" ) {
+                $this->view("Home/admin");
+                exit();
+            } else {
+                $message = "會員您好,請先申請成為賣家";
+                echo "<script type='text/javascript'>alert('$message');</script>";                   
+                $this->Redirect("mall");
+                exit();
+            }
+        }
         //echo $_SESSION['identity'].$_SESSION['userName'];
-        $this->view("Home/admin");
     }
     function shopCart()
     {
-        $this->view("Home/shopCart");
+        if (isset($_POST["admin"])) {
+            if (!isset($_SESSION["userID"]) || ($_SESSION["userID"] == "")) {
+                $this->Redirect("login");
+                exit();
+            } else {
+                if ($_SESSION['identity'] == "1" ) {
+                    $this->view("Home/admin");
+                    exit();
+                } else {
+                    $message = "會員您好,請先申請成為賣家";
+                    echo "<script type='text/javascript'>alert('$message');</script>";                   
+                    $this->view("Home/mall");
+                    exit();
+                }
+            }
+        }
+        if (!isset($_SESSION["userID"]) || ($_SESSION["userID"] == "")) {
+            $this->Redirect("login");
+            exit();
+        } else {
+            $this->view("Home/shopCart");
+        }  
+        
     }
 }

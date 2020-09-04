@@ -20,7 +20,11 @@
             <div class="col-md-12">
                 <ul class="nav">
                     <li class="nav-item">
-                        <a class="nav-link active" href="/PID_Assignment/home/admin">賣家中心</a>
+                        <form id="admin" method="post">
+                            <input type="submit" class="btn btn-link" style="margin: 2%;" value="賣家中心" />
+                            <!-- <a class="header-link nav-link" type="submit">賣家中心</a>     -->
+                            <input type="hidden" name="admin" value="true" />
+                        </form>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/PID_Assignment/home/mall">回購物中心</a>
@@ -28,12 +32,12 @@
                     <li class="nav-item dropdown ml-md-auto">
                         <div class="row">
                             <a class="nav-link " href="#"> 幫助中心</a>
-                            <?php 
-                                if(!isset($_SESSION["userName"]) || ($_SESSION["userName"]=="")){
-                                    echo '<a class="header-link nav-link " href="/PID_Assignment/home/login" id="navbarMenuLink">登入 / 註冊</a>';
-                                }else{
-                                    echo '<a class="header-link nav-link " href="/PID_Assignment/home/login" id="navbarMenuLink">'.$_SESSION['userName'].'/ 登出</a>';
-                                }
+                            <?php
+                            if (!isset($_SESSION["userName"]) || ($_SESSION["userName"] == "")) {
+                                echo '<a class="header-link nav-link " href="/PID_Assignment/home/login" id="navbarMenuLink">登入 / 註冊</a>';
+                            } else {
+                                echo '<a class="header-link nav-link " href="/PID_Assignment/home/login" id="navbarMenuLink">' . $_SESSION['userName'] . '/ 登出</a>';
+                            }
                             ?>
                         </div>
                         <div class="col">
@@ -80,14 +84,12 @@
         <script>
             $(document).ready(function() {
                 //確認購物車清單
-                checkShopCart = function(id) {
-                    console.log("checkDetail" + id);
+                checkShopCart = function() {
                     $.ajax({
                         type: "POST",
                         url: "/PID_Assignment/core/Upload.php",
                         dataType: "json",
                         data: {
-                            userID: 1,
                             action: "checkShopCart"
                         },
                         success: function(data) {
@@ -108,7 +110,7 @@
                         }
                     })
                 }
-                checkShopCart(2);
+                checkShopCart();
 
             })
 
@@ -160,22 +162,42 @@
                     $('#' + idName + ' #list-body-info').append(`
                     <label>賣家編號:</label><span class="userID">${sellerID}</span><br>
                     <label>商品名稱:</label><span class="datatime">${name}</span><br>
-                    <label>價格:</label><span class="price">${price}</span><br>
-                    <label>數量:</label><button id="plus">-</button><span class="quantity">${quantity}</span><button id="minus">+</button><br>
+                    <label>價格:</label><span id="price" value ="${price}" class="price">${price}</span><br>
+                    <label>數量:&nbsp;</label><button id="minus" name = "${commodityID}"value="${quantity}"onclick="minus(this)">-</button><input class="w-25" id="inputQuantity${commodityID}" type="text" value="${quantity}" onkeyup="value=value.replace(/[^\\d]/g,'')"><button id="plus" name = "${commodityID}"value="${quantity}"onclick="plus(this)">+</button><br>
                     <label>售出:</label><span class="sellerID">${sellerID}</span>`);
                     $('#' + idName + ' #list-footer').append(`
-                    <button onclick="insertForm(${idName})" value="${commodityID}">刪除</button>
-                    <button  value="${commodityID}">直接購買</button>`)
+                    <button onclick="delShopCart(this)" value="${commodityID}">刪除</button>`)
                     if (i == count - 1) {
                         $('#' + idName + ' #list-body-info').append(`<br><button onclick="buy(this)">直接購買</button`);
                     }
                 }
             }
+                
+                plus = function(obj){
+                    let value = ++obj.value;
+                    let $inputQuantity = obj.name;
+                    $("#inputQuantity"+obj.name).val(value);
+                    price = $("#price").attr("value");
+                    $("#price").text(price*value);
+                    //console.log("plus",value,$(obj.name));
+                }
+                minus = function(obj){
+                    let value = --obj.value;
+                    (value<0)?value=0:value=value;
+                    let $inputQuantity = obj.name;
+                    $("#inputQuantity"+obj.name).val(value);
+                    price = $("#price").attr("value");
+                    $("#price").text(price*value);
+                    //console.log("plus",value,$(obj.name));
+                }
+                
             buy = function(obj) {
-
-                var chk_value = []; //定義一個陣列  
-                $('input[name="checkBuy"]:checked').each(function() { //遍歷每一個名字為interest的核取方塊，其中選中的執行函式  
+                var chk_value = []; //定義一個陣列
+                var chk_quantity = []; 
+                $('input[name="checkBuy"]:checked').each(function() { //遍歷每一個名字為checkBuy的核取方塊，其中選中的執行函式  
                     chk_value.push($(this).val()); //將選中的值新增到陣列chk_value中  
+                    chk_quantity.push($("#inputQuantity"+chk_value[chk_value.length-1]).val());
+                    console.log(chk_quantity);
                 });
                 console.log(chk_value);
                 if (chk_value.length > 0) {
@@ -184,7 +206,7 @@
                         url: "/PID_Assignment/core/Upload.php",
                         dataType: "json",
                         data: {
-                            userID: 1,
+                            quantity:chk_quantity,
                             commodityID: chk_value,
                             action: "buy"
                         },
@@ -192,10 +214,10 @@
                             if (data.successMsg) {
                                 console.log(data.successMsg);
                                 alert(data.successMsg);
-                                checkShopCart(2);
+                                checkShopCart();
                             } else {
                                 alert(data.errorMsg);
-                                checkShopCart(2);
+                                checkShopCart();
                                 console.log(data.errorMsg);
                             }
                             //$("#tr-member"+id).after("<tr id='detail'></tr>")             
@@ -206,6 +228,32 @@
                     })
                 }
 
+            }
+            delShopCart = function(obj){
+                $.ajax({
+                        type: "POST",
+                        url: "/PID_Assignment/core/Upload.php",
+                        dataType: "json",
+                        data: {                            
+                            commodityID: obj.value,
+                            action: "delShopCart"
+                        },
+                        success: function(data) {
+                            if (data.successMsg) {
+                                console.log(data.successMsg);
+                                alert(data.successMsg);
+                                checkShopCart();
+                            } else {
+                                alert(data.errorMsg);
+                                checkShopCart();
+                                console.log(data.errorMsg);
+                            }
+                            //$("#tr-member"+id).after("<tr id='detail'></tr>")             
+                        },
+                        error: function(jqXHR) {
+                            console.log(jqXHR);
+                        }
+                    })
             }
         </script>
 </body>
