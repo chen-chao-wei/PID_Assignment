@@ -1,6 +1,7 @@
 <?php
 session_start();
 include_once 'Database.php';
+//先將img轉成base64編碼再傳回前端
 function imgToBase64($date)
 {
     foreach ($date as $key => $item) {
@@ -32,6 +33,7 @@ function getCommodity($isImg,$userID,$commodityID)
     
     return $result;
 }
+
 function setCommodity($userID,$commodityID,$quantitySold){
     $conn = new DB();
     $srcCommodity = getCommodity(false,"",$commodityID);
@@ -46,6 +48,15 @@ function setCommodity($userID,$commodityID,$quantitySold){
     block;
     $conn->select($sqlSetCommodity);
     return true;
+}
+function delCommodity($userID, $commodityID)
+{
+    $conn = new DB();
+
+    $sqlDelCommodity = <<<block
+        DELETE FROM commodity WHERE userID = $userID && commodityID = $commodityID;
+        block;
+    return ($conn->delete($sqlDelCommodity))?true:false;
 }
 function setShopCart($userID, $commodityID, $quantity)
 {
@@ -135,11 +146,12 @@ function setOrder($userID, $commodityID,$quantityArr)
         block;
     
         if($commodityInfo[0]['quantity']<$quantity){
+            delShopCart($userID,$item);
             return "抱歉，目前存貨剩餘".$commodityInfo[0]['quantity']."。";
         }
         if(setCommodity($sellerID,$item,$quantity)){
-            if($conn->select($sqlSetOrder))
-                delShopCart($userID,$item);
+            $conn->select($sqlSetOrder);
+            delShopCart($userID,$item);   
         }else{
             delShopCart($userID,$item);
             return "抱歉，目前存貨不足。";
@@ -149,6 +161,29 @@ function setOrder($userID, $commodityID,$quantityArr)
     
     return true;
     
+}
+function getOrder($userID){
+    $conn = new DB();
+    
+    $sqlGetOrder = <<<block
+        SELECT o.orderID,o.datatime,c.userID as sellerID,o.commodityID,c.name ,o.quantity,o.price,o.quantity*o.price as amount
+        FROM 	`order` o 
+        INNER JOIN commodity c
+        ON o.commodityID = c.commodityID
+        where o.userID = $userID
+        GROUP BY o.orderID,o.datatime,o.commodityID,c.name ,o.quantity,o.price
+        ORDER BY o.datatime DESC;
+    block;
+    $result = $conn->select($sqlGetOrder);
+    return $result;
+}
+function setUserIdentity($userID){
+    $conn = new DB();
+    $sqlUserIdentity = <<<block
+    UPDATE `users` SET identity = 1
+    WHERE userID = $userID ;
+    block;    
+    return  ($conn->update($sqlUserIdentity))?true:false;
 }
 try {
 
@@ -180,13 +215,13 @@ try {
             }
         }
 
-        //echo ($_REQUEST['userID']);
+        //echo ($_SESSION['userID']);
         //$formData = json_decode(file_get_contents($_REQUEST['formData']), true);
-        $conn = new DB();
+        $conn = new DB(); 
         if ($_REQUEST['action'] == "upload" && $_FILES != null) {
             $sql = <<<block
             insert into commodity(userID,name,category,quantity,quantitySold,price,description,img) 
-            values({$_REQUEST['userID']},'{$_REQUEST['name']}','{$_REQUEST['category']}',
+            values({$_SESSION['userID']},'{$_REQUEST['name']}','{$_REQUEST['category']}',
                 {$_REQUEST['quantity']},0,{$_REQUEST['price']},'{$_REQUEST['description']}','$file');
             block;
 
@@ -200,14 +235,14 @@ try {
                 update commodity set name ='{$_REQUEST['name']}',category = '{$_REQUEST['category']}',
                     quantity = {$_REQUEST['quantity']},price = {$_REQUEST['price']},
                     description = '{$_REQUEST['description']}',img = '$file' 
-                where userID = {$_REQUEST['userID']} && commodityID={$_REQUEST['commodityID']};                
+                where userID = {$_SESSION['userID']} && commodityID={$_REQUEST['commodityID']};                
                 block;
             } else {
                 $sql = <<<block
                 update commodity set name ='{$_REQUEST['name']}',category = '{$_REQUEST['category']}',
                     quantity = {$_REQUEST['quantity']},price = {$_REQUEST['price']},
                     description = '{$_REQUEST['description']}' 
-                where userID = {$_REQUEST['userID']} && commodityID={$_REQUEST['commodityID']};                
+                where userID = {$_SESSION['userID']} && commodityID={$_REQUEST['commodityID']};                
                 block;
             }
 
@@ -218,6 +253,12 @@ try {
         }
     } else if ($_SERVER['REQUEST_METHOD'] == "POST" && $_POST['action'] == "showList") {
         @$userID = $_SESSION['userID'];
+        if(!isset($_SESSION['userID'])){
+            echo json_encode(array(
+                'errorMsg' => "請先登入！"
+            ));
+            return;
+        }
         if ($userID != null) {
             $conn        = new DB();
             $commodityID = array();
@@ -256,6 +297,13 @@ try {
     } else if ($_SERVER['REQUEST_METHOD'] == "POST" && $_REQUEST['action'] == "insertForm") {
         @$userID = $_SESSION['userID'];
         @$commodityID = $_POST["commodityID"];
+        if(!isset($_SESSION['userID'])){
+            echo json_encode(array(
+                'errorMsg' => "請先登入！"
+            ));
+            return;
+        }
+        
         if ($userID != null) {
             $conn        = new DB();
             $commodityID;
@@ -296,10 +344,33 @@ try {
                 'src'         => $base64Src
             ));
         }
-    } else if ($_SERVER['REQUEST_METHOD'] == "POST" && $_POST['action'] == "addToShopCart") {
+    } else if ($_SERVER['REQUEST_METHOD'] == "POST" && $_REQUEST['action'] == "delCommodity") {
+        if(!isset($_SESSION['userID'])){
+            echo json_encode(array(
+                'msg' => "請先登入！"
+            ));
+            return;
+        }
+        $result = delCommodity($_SESSION['userID'], $_POST['commodityID']);
+        if($result==true){
+            echo json_encode(array(
+                'msg' => "OK"
+            ));
+        }else{
+            echo json_encode(array(
+                'msg' => "ERROR"
+            ));
+        }
+    }else if ($_SERVER['REQUEST_METHOD'] == "POST" && $_POST['action'] == "addToShopCart") {
         if ($_POST['quantity'] < 0) {
             echo json_encode(array(
                 'errorMsg' =>  "商品數量錯誤"
+            ));
+            return;
+        }
+        if(!isset($_SESSION['userID'])){
+            echo json_encode(array(
+                'errorMsg' => "請先登入！"
             ));
             return;
         }
@@ -309,7 +380,12 @@ try {
             'successMsg' => "OK"
         ));
     } else if ($_SERVER['REQUEST_METHOD'] == "POST" && $_POST['action'] == "checkShopCart") {
-
+        if(!isset($_SESSION['userID'])){
+            echo json_encode(array(
+                'errorMsg' => "請先登入！"
+            ));
+            return;
+        }
         $result = getShopCart($_SESSION['userID']);
         if ($result) {
             echo json_encode(array(
@@ -322,12 +398,21 @@ try {
         }
     } else if ($_SERVER['REQUEST_METHOD'] == "POST" && $_POST['action'] == "buy") {
 
-        // if($_POST['quantity']<0){
-        //     echo json_encode(array(
-        //         'errorMsg' =>  "商品數量錯誤"
-        //     ));
-        //     return ;
-        // }
+        foreach($_POST['quantity'] as $item){
+            if($item<=0){
+                echo json_encode(array(
+                    'errorMsg' =>  "商品數量錯誤"
+                ));
+                return ;
+            }
+        }
+        
+        if(!isset($_SESSION['userID'])){
+            echo json_encode(array(
+                'errorMsg' => "請先登入！"
+            ));
+            return;
+        }
         $result = setOrder($_SESSION['userID'], $_POST['commodityID'],$_POST['quantity']);
         if($result===true){
             echo json_encode(array(
@@ -339,7 +424,24 @@ try {
             ));
         }
         
-    } else if ($_SERVER['REQUEST_METHOD'] == "POST" && $_POST['action'] == "delShopCart") {
+    } else  if($_SERVER['REQUEST_METHOD'] == "POST" && $_POST['action']=="getOrder") {    
+        $result = getOrder($_SESSION['userID']);
+        if ($result) {       
+            echo json_encode(array(
+                'detail' => $result
+            ));
+        } else {
+            echo json_encode(array(
+                'errorMsg' => "查詢失敗,ERROR CODE:2"
+            ));
+        }        
+    }else if ($_SERVER['REQUEST_METHOD'] == "POST" && $_POST['action'] == "delShopCart") {
+        if(!isset($_SESSION['userID'])){
+            echo json_encode(array(
+                'errorMsg' => "請先登入！"
+            ));
+            return;
+        }
         $result = delShopCart($_SESSION['userID'], $_POST['commodityID']);
         if($result==true){
             echo json_encode(array(
@@ -350,7 +452,30 @@ try {
                 'errorMsg' => $result
             ));
         }
-    } else {
+    } else if ($_SERVER['REQUEST_METHOD'] == "POST" && $_POST['action'] == "applyForAdmin") {
+        
+        if(!isset($_SESSION['userID'])){
+            echo json_encode(array(
+                'msg' => "請先登入！"
+            ));
+            return;
+        }else if($_SESSION['identity']==1){
+            echo json_encode(array(
+                'msg' => "您已經是賣家了。"
+            ));
+            return;
+        }
+        $result = setUserIdentity($_SESSION['userID']);
+        if($result==true){
+            echo json_encode(array(
+                'refresh' => "申請成功，您已成為賣家。重新登入後生效！確認後，自動跳轉登入頁面"                
+            ));
+        }else{
+            echo json_encode(array(
+                'msg' => "操作失敗！"
+            ));
+        }
+    }else {
         echo json_encode(array(
             'msg' => "error"
         ));

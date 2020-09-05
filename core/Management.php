@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 include_once 'Database.php';
 function getUsersInfo(){
     $conn = new DB();
@@ -26,7 +26,8 @@ function getOrder($userID){
         INNER JOIN commodity c
         ON o.commodityID = c.commodityID
         where o.userID = $userID
-        GROUP by o.orderID,o.datatime,o.commodityID,c.name ,o.quantity,o.price;
+        GROUP by o.orderID,o.datatime,o.commodityID,c.name ,o.quantity,o.price
+        ORDER BY o.datatime DESC;;
     block;
     $result = $conn->select($sqlGetOrder);
     return $result;
@@ -46,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
     }
 }else if($_SERVER['REQUEST_METHOD'] == "POST"&& $_POST['action']=="management") {    
     $inputBan = $_POST['inputBan'];
-    $usersID = $_POST['usersID'];
+    $usersID = $_SESSION['userID'];
     $count = count($inputBan);
     $conn = new DB();
     for($i=0;$i<$count;$i++){
@@ -68,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
         ));
     }        
 }else  if($_SERVER['REQUEST_METHOD'] == "POST" && $_POST['action']=="getOrder") {    
-    $result = getOrder($_POST['usersID']);
+    $result = getOrder($_POST['userID']);
     if ($result) {       
         echo json_encode(array(
             'detail' => $result

@@ -1,54 +1,9 @@
 <?php
 session_start();
 
-// if (isset($_GET["logout"])) {
-//     session_unset();    
-//     $sUserName = "Guest";
-//     //setcookie("userName", "Guest", time() - 3600);
-//     header("Location: login.php");
-//     exit();
-// }
-
-// if (isset($_POST["btnHome"])) {
-//     header("Location: index.php");
-//     exit();
-// }
-
-
 class HomeController extends Controller
 {
-    function index()
-    {
-        echo "home page of HomeController";
-    }
-    function hello()
-    {
-        if (isset($_POST["logout"])) {
-
-            $message = $_SESSION["userName"] . "您已登出.";
-            echo "<script type='text/javascript'>alert('$message');</script>";
-            unset($_SESSION['userName']);
-            //$this->Redirect("login");
-            //setcookie("userName", "Guest", time() - 3600);
-            // header("Location: index.php");
-            // exit();
-        }
-        if (isset($_SESSION["userName"])) {
-            $sUserName = $_SESSION["userName"];
-            $user = $this->model("Users");
-            $user->name = $sUserName;
-            $this->view("Home/hello", $user);
-            exit();
-        } else {
-
-            unset($_SESSION['userName']);
-            $this->Redirect("login");
-            echo ("123r");
-        }
-
-
-        //echo "Hello! $user->name";
-    }
+ 
 
     function register()
     {
@@ -114,7 +69,7 @@ class HomeController extends Controller
     }
     function mall()
     {
-        if (isset($_POST["logout"])) {
+        if (isset($_POST["logout"])&&isset($_SESSION['userID'])) {
             $message = $_SESSION["userName"] . "您已登出.";
             echo "<script type='text/javascript'>alert('$message');</script>";
             unset($_SESSION['userName']);
@@ -145,8 +100,10 @@ class HomeController extends Controller
                 exit();
             } else {
                 $this->Redirect("shopCart");
+                exit();
             }
-        }  
+        }
+        
         $this->view("Home/mall");
     }
     function admin()
@@ -155,7 +112,7 @@ class HomeController extends Controller
             $this->Redirect("login");
             exit();
         } else {
-            if ($_SESSION['identity'] == "1" ) {
+            if ($_SESSION['identity'] == 1 ) {
                 $this->view("Home/admin");
                 exit();
             } else {
@@ -169,6 +126,15 @@ class HomeController extends Controller
     }
     function shopCart()
     {
+        if (isset($_POST["logout"])&&isset($_SESSION['userID'])) {
+            $message = $_SESSION["userName"] . "您已登出.";
+            echo "<script type='text/javascript'>alert('$message');</script>";
+            unset($_SESSION['userName']);
+            unset($_SESSION['userID']);
+            unset($_SESSION['identity']);
+            $this->view("Home/mall");
+            exit();
+        }
         if (isset($_POST["admin"])) {
             if (!isset($_SESSION["userID"]) || ($_SESSION["userID"] == "")) {
                 $this->Redirect("login");

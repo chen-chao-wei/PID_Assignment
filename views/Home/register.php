@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
-  <title>Document</title>
+  <title>Register</title>
 </head>
 
 <body>
@@ -52,6 +52,7 @@
               <input required id="password" name="password" type="password" aria-describedby="passwordHelpBlock" class="form-control">
               <span id="passwordHelpBlock" class="form-text text-muted">輸入密碼</span>
             </div>
+            
           </div>
           <div class="form-group row">
             <div class="offset-4 col-8">

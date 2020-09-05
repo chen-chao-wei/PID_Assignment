@@ -42,3 +42,10 @@
     - 及時改變金額
   ![image](https://github.com/weichen-chungyo/PID_Assignment/blob/master/viewImages/0904.jpg)
 ### TODO: 報表,UI,
+## 0906
+  - 調整網址轉址 導向 mall.php
+  - 刪除商品資訊
+  - 買家查看訂單紀錄
+  
+  ![image](https://github.com/weichen-chungyo/PID_Assignment/blob/master/viewImages/0904.jpg)
+### TODO: 報表,UI,

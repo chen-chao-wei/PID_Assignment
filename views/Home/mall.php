@@ -20,27 +20,32 @@
                         <a class="header-link nav-link active" href="/PID_Assignment/home/mall">Home</a>
                     </li>
                     <li class="nav-item">
-                        <form id="admin" method="post" >
-                        <input type="submit" class="btn btn-link" style="margin: 2%;" value="賣家中心" />
+                        <form id="admin" method="post">
+                            <input type="submit" class="btn btn-link" style="margin: 2%;" value="賣家中心" />
                             <!-- <a class="header-link nav-link" type="submit">賣家中心</a>     -->
-                            <input type="hidden" name="admin" value="true" />                         
+                            <input type="hidden" name="admin" value="true" />
                         </form>
                     </li>
-                    
+
                     <li class="nav-item dropdown ml-md-auto">
                         <div class="row">
+                            <!-- <form id="applyForAdmin" method="post" >
+                            <input type="submit" class="btn btn-link" style="margin: 2%;" value="成為賣家" />                            
+                            <input type="hidden" name="applyForAdmin" value="true" />                         
+                            </form> -->
+                            <a id="applyForAdmin" class="header-link nav-link " href="#"> 成為賣家</a>
                             <a class="header-link nav-link " href="#"> 幫助中心</a>
-                            <form id="logout" method="post" >
-                            
-                            <input type="hidden" name="logout" value="true" />                            
-                            <?php                             
-                                if(!isset($_SESSION["userName"]) || ($_SESSION["userName"]=="")){
+                            <form id="logout" method="post">
+
+                                <input type="hidden" name="logout" value="true" />
+                                <?php
+                                if (!isset($_SESSION["userName"]) || ($_SESSION["userName"] == "")) {
                                     echo '<a class="header-link nav-link " href="/PID_Assignment/home/login" id="navbarMenuLink">登入 / 註冊</a>';
-                                }else{
-                                    echo '<a class="header-link nav-link "  id="navbarMenuLink">'.$_SESSION['userName'].'/ <input type="submit" class="pull-right btn btn-link" style="margin: 2%;" value="登出" /></a>';
+                                } else {
+                                    echo '<input type="submit" class="pull-right btn btn-link" style="margin: 2%;" value="'.$_SESSION['userName'].'/登出" />';
                                 }
-                                
-                            ?>
+
+                                ?>
                             </form>
                             <!-- <a class="nav-link">|</a>
                         <a class="nav-link " href="/PID_Assignment/home/login" id="navbarMenuLink" >登入</a> -->
@@ -73,10 +78,10 @@
                         </form>
                         <ul class="navbar-nav ml-md-auto">
                             <li class="nav-item active">
-                            <form id="shopCart" method="post" >
-                                <input type="submit" class="fa fa-shopping-cart header-link btn btn-link" style="margin: 2%;" value="購物車" />
-                                <input type="hidden" name="shopCart" value="true" />                         
-                            </form>
+                                <form id="shopCart" method="post">
+                                    <input type="submit" class="fa fa-shopping-cart header-link btn btn-link" style="margin: 2%;" value="購物車" />
+                                    <input type="hidden" name="shopCart" value="true" />
+                                </form>
                                 <!-- <h3><a class="fa fa-shopping-cart header-link " href="/PID_Assignment/home/shopCart"> 購物車 <span class="sr-only">(current)</span></a></h3> -->
                             </li>
 
@@ -85,8 +90,13 @@
                 </nav>
             </div>
         </div>
+        <div id="Main-of-this-season" style="height:100px;background-color: whitesmoke;" class="progress">
+            <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;height:100px ;margin:.625rem;padding-top: 1.25rem;background-clip:content-box;">
+                <h1>本季主打</h1>
+            </div>
+        </div>
         <div id="div-carousel" class="content row">
-            <div class="carousel slide" style="padding-bottom: 1%;" id="carousel-46838">
+            <div class="carousel slide w-100" style="padding-bottom: 1%;margin:.625rem;" id="carousel-46838">
                 <ol id="carousel-indicators" class="carousel-indicators">
                     <!-- <li data-slide-to="0" data-target="#carousel-46838" class="active">
                     </li>                     -->
@@ -104,22 +114,27 @@
                         </div>
                     </div> -->
                 </div>
-                <h1 ><a style="color: red;"class="carousel-control-prev" href="#carousel-46838" role="button" data-slide="prev">
-                    <span class="fa fa-arrow-circle-left" aria-hidden="true"></span>
-                    <span class="sr-only">Previous</span>
-                </a>
-                <a style="color: red;" class="carousel-control-next" href="#carousel-46838" role="button" data-slide="next">
-                    <span class="fa fa-arrow-circle-right" aria-hidden="true"></span>
-                    <span class="sr-only">Next</span>
-                </a></h1>
+                <h1><a style="color: red;" class="carousel-control-prev" href="#carousel-46838" role="button" data-slide="prev">
+                        <span class="fa fa-arrow-circle-left" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a style="color: red;" class="carousel-control-next" href="#carousel-46838" role="button" data-slide="next">
+                        <span class="fa fa-arrow-circle-right" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a></h1>
 
             </div>
-        </div>       
-        <div id="section-header" style="height:100px"class="progress">
-            <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;height:100px ;margin:auto;padding-bottom: 1.25rem;background-clip:content-box;"><h1>商品分類</h1></div>
-        </div>       
-        <div id="welcome-pakage" style="height:150px"class="progress">
-            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;height:150px ;margin:auto;padding-bottom: 1.25rem;background-clip:content-box;"><h1>我是廣告</h1></div>
+        </div>
+
+        <div id="welcome-pakage" style="height:150px ;background-color: whitesmoke;" class="progress">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;height:150px ;margin:.625rem;padding-bottom: 1.25rem;background-clip:content-box;">
+                <h1>我是廣告</h1>
+            </div>
+        </div>
+        <div id="classic-train" style="height:100px; background-color: whitesmoke;" class="progress">
+            <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;height:100px ;margin:.625rem;background-clip:content-box;">
+                <h1>經典火車</h1>
+            </div>
         </div>
         <!-- <div id="limitedTimeSale" class="carousel slide" data-wrap="false" data-ride="carousel" id="carousel-demo" style="margin:2%;">
             <div id="carousel-header" class="row">
@@ -149,7 +164,7 @@
         </div> -->
         <div id="commodity-group-0" class="card-group ">
         </div>
-        
+
         <div class="row">
             <hr width="100%" style="color:brown ;background-color:brown">
         </div>
@@ -163,9 +178,9 @@
 
 
     <!-- JavaScript -->
-    <script src="../js/jquery.js"></script>
-    <script src="../js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../js/jquery.toast.js"></script>
+    <script src="/PID_Assignment/js/jquery.js"></script>
+    <script src="/PID_Assignment/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/PID_Assignment/js/jquery.toast.js"></script>
     <script>
         $(document).ready(function() {
 
@@ -264,8 +279,7 @@
                                     <img class="d-block w-100 " alt="" src="data:image/jpeg;base64,${data[i]['img']}" />
                                 <div class="carousel-caption">
                                 <h4>產品名稱:${data[i]['name']}</h4><p>${data[i]['description']}</p>
-                                </div>
-                                </div>`);
+                                </div>                                </div>`);
                             } else {
                                 $("#carousel-indicators").append(`
                                 <li data-slide-to="${categoryIDTwoCount}" data-target="#carousel-46838" >
@@ -292,7 +306,7 @@
             initCommodity();
             clickCard = function(obj) {
                 console.log("clickCard", $(obj).attr("value"));
-                
+
                 value = $(obj).attr("value");
                 if (checkAdd()) {
                     $.ajax({
@@ -301,8 +315,7 @@
                         dataType: "json",
                         data: {
                             action: "addToShopCart",
-                            commodityID: value,
-                            userID: 1,
+                            commodityID: value,                           
                             quantity: 1
                         },
                         success: function(data) {
@@ -330,7 +343,37 @@
                     return false;
                 }
             }
-
+            $("#applyForAdmin").on('click', function() {
+                $.ajax({
+                    url: '/PID_Assignment/core/upload.php',
+                    type: 'POST',
+                    dataType: "json",
+                    data:{
+                        action: "applyForAdmin"
+                    },
+                    success: function(data) {
+                        //$("#showBox").attr("src", data.src);
+                        if (data.msg != undefined) {
+                            //document.getElementById("putForm").reset();
+                            alert(data.msg);
+                            //doCommodityCard(data.msg);
+                        }else if(data.refresh){                            
+                            top.location.href="/PID_Assignment/home/login";
+                            alert(data.refresh);
+                        }
+                    },
+                    error: function(jqXHR) {
+                        console.log(jqXHR);
+                    }
+                });
+                // $.post("/PID_Assignment/core/upload.php", {                    
+                //         action: "applyForAdmin"
+                //     })
+                //     .done(function(data) {
+                //         alert(data.msg);
+                //     });
+                console.log("applyForAdmin");
+            })
         })
     </script>
 

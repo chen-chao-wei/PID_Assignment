@@ -9,7 +9,7 @@
     <link href="/PID_Assignment/css/jquery.toast.css" rel="stylesheet">
     <link href="/PID_Assignment/css/style.css" rel="stylesheet">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <title>mall</title>
+    <title>admin</title>
     <script src="/PID_Assignment/js/jquery.js"></script>
     <script src="/PID_Assignment/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/PID_Assignment/js/jquery.toast.js"></script>
@@ -33,7 +33,10 @@
                     <li class="nav-item dropdown ml-md-auto">
                         <div class="row">
                             <a class="nav-link " href="#"> 幫助中心</a>
-                            <a class="nav-link " href="/PID_Assignment/home/login" id="navbarMenuLink">登入 / 註冊</a>
+                            <form id="logout" method="post">
+                                <input type="hidden" name="logout" value="true" />
+                                <input type="submit" class="pull-right btn btn-link" style="margin: 2%;" value="<?=$_SESSION['userName']?>/登出" />
+                            </form>
                         </div>
                         <div class="col">
 
@@ -54,7 +57,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-7">
+            <div class="col-md-6">
                 <div class="row">
                     <div class="col">
                         <div class="tab-content" id="v-pills-tabContent">
@@ -74,14 +77,14 @@
                                 <!-- autocomplete='off' -->
                                 <form id="putForm" enctype="multipart/form-data" method="post" action="/PID_Assignment/core/Upload.php" onsubmit="return false">
                                     <div class="form-group row">
-                                        <label for="name" class="col-4 col-form-label">商品名稱</label>
-                                        <div class="col-8">
+                                        <label for="name" class="col-2 col-form-label">商品名稱</label>
+                                        <div class="col-10">
                                             <input id="name" name="name" type="text" class="form-control" required="required">
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="category" class="col-4 col-form-label">類別</label>
-                                        <div class="col-8">
+                                        <label for="category" class="col-2 col-form-label">類別</label>
+                                        <div class="col-10">
                                             <select id="category" name="category" class="custom-select" aria-describedby="categoryHelpBlock" required="required">
                                                 <option value="1">本季主打</option>
                                                 <option value="2">經典火車</option>
@@ -90,39 +93,39 @@
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="quantity" class="col-4 col-form-label">數量</label>
-                                        <div class="col-8">
+                                        <label for="quantity" class="col-2 col-form-label">數量</label>
+                                        <div class="col-10">
                                             <input id="quantity" name="quantity" placeholder="1" type="text" required="required" class="form-control">
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="price" class="col-4 col-form-label">價格</label>
-                                        <div class="col-8">
+                                        <label for="price" class="col-2 col-form-label">價格</label>
+                                        <div class="col-10">
                                             <input id="price" name="price" placeholder="$" type="text" class="form-control" required="required">
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="description" class="col-4 col-form-label">商品描述</label>
-                                        <div class="col-8">
+                                        <label for="description" class="col-2 col-form-label">商品描述</label>
+                                        <div class="col-10">
                                             <textarea id="description" name="description" cols="40" rows="5" class="form-control"></textarea>
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-4 col-form-label" for="Shipping">運費</label>
-                                        <div class="col-8">
+                                        <label class="col-2 col-form-label" for="Shipping">運費</label>
+                                        <div class="col-10">
                                             <input id="Shipping" name="Shipping" type="text" class="form-control">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label for="exampleFormControlFile1">預覽商品圖片</label>
                                         <div id="previewDiv"></div>
-                                        <div class="offset-4 col-8">
+                                        <div class="offset-4 col-10">
                                             <input id="uploadImage" type="file" name="image" class="form-control-file" id="exampleFormControlFile1">
                                         </div>
 
                                     </div>
                                     <div class="form-group row">
-                                        <div class="offset-4 col-8">
+                                        <div class="offset-4 col-10">
                                             <button id="uploadButton" type="button" class="btn btn-primary" onclick="upload()">確定上架</button>
                                             <button id="cancelButton" type="button" class="btn btn-primary" onclick="cancel()">取消</button>
                                         </div>
@@ -138,7 +141,7 @@
                 </div>
 
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <div id="listDiv">
 
                 </div>
@@ -164,17 +167,17 @@
             $('usersManagement').empty();
 
         })
-        window.onbeforeunload = function(e) {
-            e = e || window.event;
-            if (true) {
-                // IE 和 Firefox
-                if (e) {
-                    e.returnValue = "對不起，頁面資料已做修改，尚未儲存，確定要重新整理或離開本頁面？";
-                }
-                // Safari瀏覽器
-                return "對不起，頁面資料已做修改，尚未儲存，確定要重新整理或離開本頁面？";
-            }
-        }
+        // window.onbeforeunload = function(e) {
+        //     e = e || window.event;
+        //     if (true) {
+        //         // IE 和 Firefox
+        //         if (e) {
+        //             e.returnValue = "對不起，頁面資料已做修改，尚未儲存，確定要重新整理或離開本頁面？";
+        //         }
+        //         // Safari瀏覽器
+        //         return "對不起，頁面資料已做修改，尚未儲存，確定要重新整理或離開本頁面？";
+        //     }
+        // }
         $(document).ready(function() {
 
             getMemberInfo = function() {
@@ -339,7 +342,6 @@
                     type: 'POST',
                     dataType: "json",
                     data: {
-                        userID: "1",
                         action: "showList"
                     },
                     success: function(data) {
@@ -368,7 +370,6 @@
                     type: 'POST',
                     dataType: "json",
                     data: {
-                        userID: "1",
                         commodityID: $(idName).children(0).children(1).children(1)[1].innerText,
                         action: "insertForm"
                     },
@@ -402,7 +403,23 @@
                     }
                 });
             }
-
+            delCommodity = function(idName){
+                $.ajax({
+                    url: '/PID_Assignment/core/upload.php',
+                    type: 'POST',
+                    dataType: "json",
+                    data: {
+                        commodityID: $(idName).children(0).children(1).children(1)[1].innerText,
+                        action: "delCommodity"
+                    },
+                    success: function(data) {                        
+                        alert(data.msg);
+                        $("#showButton").trigger("click");
+                    },error: function(jqXHR) {
+                        log(jqXHR);
+                    }
+                });
+            }
             function getFormData($form) {
                 var unindexed_array = $form.serializeArray();
                 var indexed_array = {};
@@ -445,7 +462,8 @@
                     <label>數量:</label><span class="quantity">${quantity}</span><br>
                     <label>售出:</label><span class="quantitySold">0</span>`);
                     $('#' + idName + ' #list-footer').append(`
-                    <button onclick="insertForm(${idName})" value="${idName}">編輯</button>`)
+                    <button onclick="insertForm(${idName})" value="${idName}">編輯</button>
+                    <button onclick="delCommodity(${idName})" value="${idName}">刪除</button>`)
 
                 }
             }
@@ -488,7 +506,7 @@
                     url: "/PID_Assignment/core/Management.php",
                     dataType: "json",
                     data: {
-                        usersID: id,
+                        userID: id,
                         checkDetail: 1, //$("#tab-info input:nth-child(odd)")
                         action: "getOrder"
                     },
@@ -522,7 +540,7 @@
                     $("<table id='tab-detail'></table>")
                     .addClass("table ")
                     .append($('<thead></thead>').append(`<tr><th scope="col">訂單編號</th><th scope="col">
-                    時間</th><th scope="col">品項</th><th scope="col">單價</th><th scope="col">金額</th>
+                    時間</th><th scope="col">品項</th><th scope="col">單價</th><th scope="col">數量</th><th scope="col">金額</th>
                     <th scope="col">狀態</th><th scope="col">賣家</th></tr>`))
                 );
                 $("#usersManagement").append(rowElements);
@@ -535,7 +553,7 @@
                     nowOrderID = value['orderID'];
                     
                     var tableElements = $(`<tr id='detail'><td>${value['orderID']}</td>
-                     <td>${value['datatime']}</td><td>${value['name']}</td><td>${value['price']}</td>
+                     <td>${value['datatime']}</td><td>${value['name']}</td><td>${value['price']}</td><td>${value['quantity']}</td>
                      <td>${value['amount']}</td><td>未出貨</td><td>${value['sellerID']}</td></tr>`);
                     tableElements.appendTo("#tab-detail");
                     if(key!=count){
@@ -602,7 +620,6 @@
                 }
 
                 for (let i = 0; i < usersCount * 2; i += 2) {
-
                     ($("#ban" + i).prop('checked')) ? banArr.push(1): banArr.push(0);
 
                 }
