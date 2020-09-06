@@ -247,7 +247,7 @@
                                 console.log("row", rowCount);
                             }
                             $("#commodity-group-" + rowCount).append(`
-                            <div id="commodity-card-${categoryIDOneCount}"class="card " value="${i+1}" onclick="clickCard(this)">
+                            <div id="commodity-card-${categoryIDOneCount}"class="card " value="${data[i]['commodityID']}" onclick="clickCard(this)">
                             <img id ="commodity-img-${categoryIDOneCount}" class="card-img-top" src="..." alt="Card image cap">
                             <div id ="commodity-body-${categoryIDOneCount}" class="card-body">
                             <h5 class="card-title" value="">商品名稱</h5>
@@ -275,7 +275,7 @@
                                 <li data-slide-to="${categoryIDTwoCount}" data-target="#carousel-46838" class="active" >
                                 </li>`);
                                 $("#carousel-inner").append(`
-                                <div class="carousel-item active"  value="${i+1}"onclick="clickCard(this)">
+                                <div class="carousel-item active"  value="${data[i]['commodityID']}"onclick="clickCard(this)">
                                     <img class="d-block w-100 " alt="" src="data:image/jpeg;base64,${data[i]['img']}" />
                                 <div class="carousel-caption">
                                 <h4>產品名稱:${data[i]['name']}</h4><p>${data[i]['description']}</p>
@@ -285,7 +285,7 @@
                                 <li data-slide-to="${categoryIDTwoCount}" data-target="#carousel-46838" >
                                 </li>`);
                                 $("#carousel-inner").append(` 
-                                <div class="carousel-item" value="${i+1}"onclick="clickCard(this)">
+                                <div class="carousel-item" value="${data[i]['commodityID']}"onclick="clickCard(this)">
                                     <img class="d-block w-100" alt="" src="data:image/jpeg;base64,${data[i]['img']}" />
                                 <div class="carousel-caption">
                                 <h4>產品名稱:${data[i]['name']}</h4><p>${data[i]['description']}</p>

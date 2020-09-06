@@ -27,12 +27,26 @@ function getOrder($userID){
         ON o.commodityID = c.commodityID
         where o.userID = $userID
         GROUP by o.orderID,o.datatime,o.commodityID,c.name ,o.quantity,o.price
-        ORDER BY o.datatime DESC;;
+        ORDER BY o.datatime DESC;
     block;
     $result = $conn->select($sqlGetOrder);
     return $result;
 }
-
+function getOrderToLineChart($userID){
+    $conn = new DB();
+    
+    $sqlGetOrder = <<<block
+    SELECT date(o.datatime)as date,c.userID as sellerID,SUM(o.quantity*o.price) as amount
+    FROM 	`order` o 
+    INNER JOIN commodity c
+    ON o.commodityID = c.commodityID
+    where sellerID = $userID
+    GROUP by date(o.datatime)
+    ORDER BY o.datatime DESC
+    block;
+    $result = $conn->select($sqlGetOrder);
+    return $result;
+}
 header('Content-Type: application/json; charset=UTF-8');
 if ($_SERVER['REQUEST_METHOD'] == "GET") {
     $result = getUsersInfo();
@@ -73,6 +87,20 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
     if ($result) {       
         echo json_encode(array(
             'detail' => $result
+        ));
+    } else {
+        echo json_encode(array(
+            'errorMsg' => "查詢失敗,ERROR CODE:2"
+        ));
+    }        
+}else  if($_SERVER['REQUEST_METHOD'] == "POST" && $_POST['action']=="getOrderToLineChart") {    
+    $result = getOrderToLineChart($_SESSION['userID']);
+    // foreach($result as $key => $item){
+    //     $result[$key]['date'] = substr($item['date'],0,10);
+    // }
+    if ($result) {         
+        echo json_encode(array(
+            'order' => $result
         ));
     } else {
         echo json_encode(array(

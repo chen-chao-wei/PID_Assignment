@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,6 +12,9 @@
     <script src="/PID_Assignment/js/jquery.js"></script>
     <script src="/PID_Assignment/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/PID_Assignment/js/jquery.toast.js"></script>
+    <script src="https://d3js.org/d3.v4.js"></script>
+    <script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 </head>
 
 <body>
@@ -21,10 +23,10 @@
             <div class="col-md-12">
                 <ul class="nav">
                     <li class="nav-item">
-                        <form id="admin" method="post" >
-                        <input type="submit" class="btn btn-link" style="margin: 2%;" value="賣家中心" />
+                        <form id="admin" method="post">
+                            <input type="submit" class="btn btn-link" style="margin: 2%;" value="賣家中心" />
                             <!-- <a class="header-link nav-link" type="submit">賣家中心</a>     -->
-                            <input type="hidden" name="admin" value="true" />                         
+                            <input type="hidden" name="admin" value="true" />
                         </form>
                     </li>
                     <li class="nav-item">
@@ -35,7 +37,7 @@
                             <a class="nav-link " href="#"> 幫助中心</a>
                             <form id="logout" method="post">
                                 <input type="hidden" name="logout" value="true" />
-                                <input type="submit" class="pull-right btn btn-link" style="margin: 2%;" value="<?=$_SESSION['userName']?>/登出" />
+                                <input type="submit" class="pull-right btn btn-link" style="margin: 2%;" value="<?= $_SESSION['userName'] ?>/登出" />
                             </form>
                         </div>
                         <div class="col">
@@ -137,7 +139,9 @@
                             <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">...</div>
                             <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">...</div>
                         </div>
+                        <div id="my_dataviz"></div>
                     </div>
+
                 </div>
 
             </div>
@@ -153,9 +157,6 @@
     <!-- JavaScript -->
 
     <script>
-        function log(obj) {
-            console.log(obj)
-        }
         $('#v-pills-home-tab').on('click', function(e) {
             e.preventDefault()
             getMemberInfo();
@@ -167,17 +168,7 @@
             $('usersManagement').empty();
 
         })
-        // window.onbeforeunload = function(e) {
-        //     e = e || window.event;
-        //     if (true) {
-        //         // IE 和 Firefox
-        //         if (e) {
-        //             e.returnValue = "對不起，頁面資料已做修改，尚未儲存，確定要重新整理或離開本頁面？";
-        //         }
-        //         // Safari瀏覽器
-        //         return "對不起，頁面資料已做修改，尚未儲存，確定要重新整理或離開本頁面？";
-        //     }
-        // }
+
         $(document).ready(function() {
 
             getMemberInfo = function() {
@@ -223,9 +214,9 @@
                 files.append('quantity', quantity);
                 files.append('price', price);
                 files.append('description', description);
-                files.append('image', input);                
-                
-                
+                files.append('image', input);
+
+
                 //files.append('formData', formData); 
                 //console.log(name);
                 $.ajax({
@@ -237,20 +228,20 @@
                     type: 'POST',
                     success: function(data) {
                         if (data.sql == undefined) {
-                            log(data.msg);
+                            console.log(data.msg);
                         } else {
-                            log(data.sql);
+                            console.log(data.sql);
                             $("#previewDiv").empty();
                             document.getElementById("putForm").reset();
                             alert("操作成功");
                         }
 
-                        log("upload SUCCESS");
+                        console.log("upload SUCCESS");
                         //$("#putForm").empty();
                     },
                     error: function(jqXHR) {
                         alert("操作失敗");
-                        log(jqXHR);
+                        console.log(jqXHR);
                     }
                 });
             }
@@ -303,19 +294,19 @@
                     type: 'POST',
                     success: function(data) {
                         if (data.sql == undefined) {
-                            log(data.msg);
+                            console.log(data.msg);
                         } else {
-                            log(data.sql);
+                            console.log(data.sql);
                             $("#showButton").trigger("click");
                             cancel();
                             alert("操作成功");
                         }
-                        log("checkEdit SUCCESS");
+                        console.log("checkEdit SUCCESS");
                         //$("#putForm").empty();
                     },
                     error: function(jqXHR) {
                         alert("操作失敗");
-                        log(jqXHR);
+                        console.log(jqXHR);
                     }
                 });
                 //$("#checkEditButton").attr("id","uploadButton");
@@ -351,10 +342,10 @@
                             showList(data);
                         }
 
-                        log("display success" + data.name);
+                        console.log("display success" + data.name);
                     },
                     error: function(jqXHR) {
-                        log(jqXHR);
+                        console.log(jqXHR);
                     }
                 });
             })
@@ -396,14 +387,14 @@
                             showImage(data.name, "data:image/jpeg;base64," + data.src)
                         }
 
-                        log("display success" + data.name);
+                        console.log("display success" + data.name);
                     },
                     error: function(jqXHR) {
-                        log(jqXHR);
+                        console.log(jqXHR);
                     }
                 });
             }
-            delCommodity = function(idName){
+            delCommodity = function(idName) {
                 $.ajax({
                     url: '/PID_Assignment/core/upload.php',
                     type: 'POST',
@@ -412,14 +403,16 @@
                         commodityID: $(idName).children(0).children(1).children(1)[1].innerText,
                         action: "delCommodity"
                     },
-                    success: function(data) {                        
+                    success: function(data) {
                         alert(data.msg);
                         $("#showButton").trigger("click");
-                    },error: function(jqXHR) {
-                        log(jqXHR);
+                    },
+                    error: function(jqXHR) {
+                        console.log(jqXHR);
                     }
                 });
             }
+
             function getFormData($form) {
                 var unindexed_array = $form.serializeArray();
                 var indexed_array = {};
@@ -544,29 +537,29 @@
                     <th scope="col">狀態</th><th scope="col">賣家</th></tr>`))
                 );
                 $("#usersManagement").append(rowElements);
-                let nowOrderID=0;
-                let total=0;
+                let nowOrderID = 0;
+                let total = 0;
                 console.log(data.length);
-                count = data.length-1;
+                count = data.length - 1;
                 $.each(data, function(key, value) {
-                    total+=value['amount'];
+                    total += value['amount'];
                     nowOrderID = value['orderID'];
-                    
+
                     var tableElements = $(`<tr id='detail'><td>${value['orderID']}</td>
                      <td>${value['datatime']}</td><td>${value['name']}</td><td>${value['price']}</td><td>${value['quantity']}</td>
                      <td>${value['amount']}</td><td>未出貨</td><td>${value['sellerID']}</td></tr>`);
                     tableElements.appendTo("#tab-detail");
-                    if(key!=count){
-                        if(nowOrderID!=data[key+1]['orderID']){
-                        let tableTotal = $(`<tr><td>總計</td><td></td><td></td><td></td><td>${total}</td><td></td><td></td></tr>`);
-                        tableTotal.appendTo("#tab-detail");
-                        total=0; 
+                    if (key != count) {
+                        if (nowOrderID != data[key + 1]['orderID']) {
+                            let tableTotal = $(`<tr><td>總計</td><td></td><td></td><td></td><td>${total}</td><td></td><td></td></tr>`);
+                            tableTotal.appendTo("#tab-detail");
+                            total = 0;
                         }
-                    }else{
+                    } else {
                         let tableTotal = $(`<tr class="tableTotal"><td>總計</td><td></td><td></td><td></td><td>${total}</td><td></td><td></td></tr>`);
                         tableTotal.appendTo("#tab-detail");
-                    }                    
-                    
+                    }
+
                     // idx.after(`<tr id='detail'><td>${value['userID']}</td><td>${value['account']}</td>
                     // <td>${value['datatime']}</td><td>${value['actionName']}</td><td>${value['amount']}</td>
                     // <td>${value['status']}</td><td>${value['sellerID']}</td></tr>`);
@@ -600,7 +593,7 @@
                             "<td>" + data[i]['personID'] + "</td>" + "<td>" + banHtml + "</td><td>" + "<button id=checkDetailButton type ='button' onclick='checkDetail(this)' value=" + data[i]['userID'] + ">詳細明細</button>" + "</td></tr>")
                         tableElements.appendTo("#tab-info");
                     }
-                }else{
+                } else {
                     $("#tab-info").append("<h1>查無會員</h1>");
                 }
 
@@ -655,6 +648,139 @@
                 $(this).removeClass("img-in");
                 console.log("out");
             })
+            // set the dimensions and margins of the graph
+            var margin = {
+                    top: 10,
+                    right: 30,
+                    bottom: 30,
+                    left: 60
+                },
+                width = 460 - margin.left - margin.right,
+                height = 400 - margin.top - margin.bottom;
+
+            // append the svg object to the body of the page
+            var svg = d3.select("#my_dataviz")
+                .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform",
+                    "translate(" + margin.left + "," + margin.top + ")");
+            var zoom = d3.zoom()
+                .on("zoom", zoomed);
+            svg.call(zoom);
+            var rect = svg.append("rect")
+                .attr("width", width)
+                .attr("height", height)
+                .style("fill", "none")
+                .style("pointer-events", "all");
+            $.ajax({
+                url: '/PID_Assignment/core/Management.php',
+                data: {
+                    action: "getOrderToLineChart"
+                },
+                dataType: "json",
+                type: 'POST',
+                success: function(data) {
+                    if (data.order == undefined) {
+                        console.log(data.msg);
+                    } else {
+                        console.log(data.order);
+                        doDrawLineChart(data.order);
+
+
+                    }
+                },
+                error: function(jqXHR) {
+                    alert("操作失敗");
+                    log(jqXHR);
+                }
+            });
+            var data = [{
+                    "date": "2020-09-06",
+                    "value": "30"
+                },
+                {
+                    "date": "2020-09-07",
+                    "value": "10"
+                },
+                {
+                    "date": "2020-09-08",
+                    "value": "20"
+                }
+            ];
+
+
+
+
+            // Now I can use this dataset:
+            function doDrawLineChart(data) {
+                var x_scale = null;
+                var y_scale = null;
+                var x_axis = null;
+                var xAxis = null;
+                var line;
+                // Add X axis --> it is a date format
+                x_scale = d3.scaleTime()
+                    .domain(d3.extent(data, function(d) {
+                        console.log(d.date);
+                        return d3.timeParse("%Y-%m-%d")(d.date);
+
+                    }))
+                    .range([0, width]);
+                xAxis = d3.axisBottom(x_scale);
+                x_axis = svg.append("g")
+                    .attr("transform", "translate(0," + height + ")")
+                    .call(xAxis);
+
+                // Add Y axis
+                var y_scale = d3.scaleLinear()
+                    .domain([0, d3.max(data, function(d) {
+                        console.log(d.amount);
+                        return +d.amount;
+                    })])
+                    .range([height, 0]);
+                svg.append("g")
+                    .call(d3.axisLeft(y_scale));
+
+                // Add the line
+                line = svg.append("path")
+                    .datum(data)
+                    .attr("fill", "none")
+                    .attr("stroke", "steelblue")
+                    .attr("stroke-width", 1.5)
+                    .attr("d", d3.line()
+                        .x(function(d) {
+                            return x_scale(d3.timeParse("%Y-%m-%d")(d.date))
+                        })
+                        .y(function(d) {
+                            console.log("value", d.amount);
+                            return y_scale(d.amount)
+                        })
+                        .curve(d3.curveBasis)
+                    )
+
+            }
+
+            function zoomed() {
+                var new_x_scale = d3.event.transform.rescaleX(x_scale);
+
+
+                x_axis.transition()
+                    .duration(0)
+                    .call(xAxis.scale(new_x_scale));
+                // line.attr("d", d3.line()
+                //     .x(function(d) {
+                //         return x_scale(new_x_scale(d.date))
+                //     }));
+                
+                console.log(00);
+
+            }
+            //Read the data
+            //data = test(data);
+            //doDrawLineChart(data);
+
         });
     </script>
 
