@@ -84,7 +84,7 @@ class HomeController extends Controller
                 exit();
             } else {
                 if ($_SESSION['identity'] == "1" ) {
-                    $this->view("Home/admin");
+                    $this->Redirect("admin");
                     exit();
                 } else {
                     $message = "會員您好,請先申請成為賣家";

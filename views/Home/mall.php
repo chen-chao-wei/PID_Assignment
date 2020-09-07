@@ -79,7 +79,8 @@
                         <ul class="navbar-nav ml-md-auto">
                             <li class="nav-item active">
                                 <form id="shopCart" method="post">
-                                    <input type="submit" class="fa fa-shopping-cart header-link btn btn-link" style="margin: 2%;" value="購物車" />
+                                    <span class="fa fa-shopping-cart"></span>
+                                    <input type="submit" class=" header-link btn btn-link" style="margin: 2%;" value="購物車" />
                                     <input type="hidden" name="shopCart" value="true" />
                                 </form>
                                 <!-- <h3><a class="fa fa-shopping-cart header-link " href="/PID_Assignment/home/shopCart"> 購物車 <span class="sr-only">(current)</span></a></h3> -->

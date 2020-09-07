@@ -15,6 +15,24 @@
 //app -> mall-link 原理 ?
 //change 改變數量
 //setShopCart
+//歷史紀錄有錯
+//登出有錯
+SELECT DATE(o.datatime),c.userID as sellerID,o.commodityID,SUM(o.quantity*o.price) as amount
+    FROM 	`order` o 
+    INNER JOIN commodity c
+    ON o.commodityID = c.commodityID
+    where sellerID = 1
+    GROUP by DATE(o.datatime),o.commodityID,c.userID
+    having count(distinct o.commodityID)
+    ORDER BY amount DESC
+
+SELECT date(o.datatime)as date,c.userID as sellerID,SUM(o.quantity*o.price) as amount
+    FROM 	`order` o 
+    INNER JOIN commodity c
+    ON o.commodityID = c.commodityID
+    where sellerID = 1 AND DATE_SUB(CURDATE(), INTERVAL 7 DAY) <= date(o.datatime)
+    GROUP by date(o.datatime),c.userID
+    ORDER BY date(o.datatime) DESC
 
 https://www.d3-graph-gallery.com/line
 https://stackoverflow.com/questions/39387727/d3v4-zooming-equivalent-to-d3-zoom-x

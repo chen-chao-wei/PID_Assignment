@@ -15,13 +15,16 @@
     <script src="https://d3js.org/d3.v4.js"></script>
     <script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <!-- <script src="https://d3js.org/d3-time.v2.min.js"></script>
+<script src="https://d3js.org/d3-time-format.v3.min.js"></script> -->
+
 </head>
 
 <body>
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
-                <ul class="nav">
+                <ul class="header nav" >
                     <li class="nav-item">
                         <form id="admin" method="post">
                             <input type="submit" class="btn btn-link" style="margin: 2%;" value="賣家中心" />
@@ -54,8 +57,9 @@
             <div class="col-md-2">
                 <div class="col">
                     <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                        <a class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">會員管理</a>
-                        <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="false">我的商品</a>
+                        <a class="nav-link active" id="v-pills-management-tab" data-toggle="pill" href="#v-pills-management" role="tab" aria-controls="v-pills-management" aria-selected="true">會員管理</a>
+                        <a class="nav-link" id="v-pills-commodity-tab" data-toggle="pill" href="#v-pills-commodity" role="tab" aria-controls="v-pills-commodity" aria-selected="false">我的商品</a>
+                        <a class="nav-link" id="v-pills-myData-tab" data-toggle="pill" href="#v-pills-myData" role="tab" aria-controls="v-pills-myData" aria-selected="false">銷售數據</a>
                     </div>
                 </div>
             </div>
@@ -63,18 +67,18 @@
                 <div class="row">
                     <div class="col">
                         <div class="tab-content" id="v-pills-tabContent">
-                            <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
+                            <div class="tab-pane fade show active" id="v-pills-management" role="tabpanel" aria-labelledby="v-pills-management-tab">
                                 <form>
                                     <div id="usersManagement" class="row">
 
 
                                     </div>
                                     <div id="formFooter">
-                                        <button id="managementButton" type="button" onclick="management()">確認操作</button>
+                                        <button id="managementButton" class="btn btn-primary"type="button" onclick="management()">確認操作</button>
                                     </div>
                                 </form>
                             </div>
-                            <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+                            <div class="tab-pane fade" id="v-pills-commodity" role="tabpanel" aria-labelledby="v-pills-commodity-tab">
 
                                 <!-- autocomplete='off' -->
                                 <form id="putForm" enctype="multipart/form-data" method="post" action="/PID_Assignment/core/Upload.php" onsubmit="return false">
@@ -136,10 +140,20 @@
                                 <button id="showButton" type="button" class="btn btn-primary" value="">已上架商品</button>
 
                             </div>
-                            <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">...</div>
-                            <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">...</div>
+                            <div class="tab-pane fade" id="v-pills-myData" role="tabpanel" aria-labelledby="v-pills-myData-tab">
+                                <div class="row">
+                                    <h2><label id="label-lineChart">報表類別：最近7天銷售額</label></h2>
+                                </div>
+                                <div class="row">&nbsp;</div>
+                                <div class="row">
+                                    <button id="btn-last7days" class="btn btn-primary">最近7天銷售額</button> &nbsp;                                    
+                                    <button id="btn-last30days" class="btn btn-success">最近30天銷售額</button>
+                                </div>
+
+                                <div id="my_dataviz"></div>
+                            </div>
                         </div>
-                        <div id="my_dataviz"></div>
+
                     </div>
 
                 </div>
@@ -157,13 +171,13 @@
     <!-- JavaScript -->
 
     <script>
-        $('#v-pills-home-tab').on('click', function(e) {
+        $('#v-pills-management-tab').on('click', function(e) {
             e.preventDefault()
             getMemberInfo();
             $("#listDiv").empty();
             cancel();
         })
-        $('#v-pills-profile-tab').on('click', function(e) {
+        $('#v-pills-commodity-tab').on('click', function(e) {
             e.preventDefault()
             $('usersManagement').empty();
 
@@ -315,7 +329,7 @@
             $("#showButton").click(function() {
                 $("#listDiv").empty();
                 $("#listDiv").append(`
-                        <div id="listDivRow0" class="row" style="margin:1%">
+                        <div id="listDivRow0" class="listDiv row" style="margin:1%">
                             <div id="list-header" class="col-md-5 ">
                                 <img class="img-fluid" src="">
                             </div>
@@ -590,7 +604,7 @@
                         count += 2;
 
                         var tableElements = $("<tr id=tr-member" + data[i]['userID'] + "><td>" + data[i]['userID'] + "</td><td>" + data[i]['account'] + "</td>" +
-                            "<td>" + data[i]['personID'] + "</td>" + "<td>" + banHtml + "</td><td>" + "<button id=checkDetailButton type ='button' onclick='checkDetail(this)' value=" + data[i]['userID'] + ">詳細明細</button>" + "</td></tr>")
+                            "<td>" + data[i]['personID'] + "</td>" + "<td>" + banHtml + "</td><td>" + "<button id='checkDetailButton' class='btn btn-primary' type ='button' onclick='checkDetail(this)' value=" + data[i]['userID'] + ">詳細明細</button>" + "</td></tr>")
                         tableElements.appendTo("#tab-info");
                     }
                 } else {
@@ -617,6 +631,7 @@
 
                 }
                 console.log(banArr);
+
                 $.ajax({
                     type: "POST",
                     url: "/PID_Assignment/core/Management.php",
@@ -648,95 +663,145 @@
                 $(this).removeClass("img-in");
                 console.log("out");
             })
-            // set the dimensions and margins of the graph
-            var margin = {
-                    top: 10,
-                    right: 30,
-                    bottom: 30,
-                    left: 60
-                },
-                width = 460 - margin.left - margin.right,
-                height = 400 - margin.top - margin.bottom;
-
-            // append the svg object to the body of the page
-            var svg = d3.select("#my_dataviz")
-                .append("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
-                .append("g")
-                .attr("transform",
-                    "translate(" + margin.left + "," + margin.top + ")");
-            var zoom = d3.zoom()
-                .on("zoom", zoomed);
-            svg.call(zoom);
-            var rect = svg.append("rect")
-                .attr("width", width)
-                .attr("height", height)
-                .style("fill", "none")
-                .style("pointer-events", "all");
-            $.ajax({
-                url: '/PID_Assignment/core/Management.php',
-                data: {
-                    action: "getOrderToLineChart"
-                },
-                dataType: "json",
-                type: 'POST',
-                success: function(data) {
-                    if (data.order == undefined) {
-                        console.log(data.msg);
-                    } else {
-                        console.log(data.order);
-                        doDrawLineChart(data.order);
 
 
+            var svg = null;
+            var bisect = null;
+            var focus = null;
+            var focusText = null;
+            var rect = null;
+            var zoom = null;
+            var lineChartData = null;
+            var x_scale = null;
+            var y_scale = null;
+            var x_axis = null;
+            var xAxis = null;
+            var line;
+
+            function getOrderLineChart(inputDay) {
+                $.ajax({
+                    url: '/PID_Assignment/core/Management.php',
+                    data: {
+                        action: "getOrderToLineChart",
+                        day: inputDay
+                    },
+                    dataType: "json",
+                    type: 'POST',
+                    success: function(data) {
+                        if (data.order == undefined) {
+                            console.log(data.msg);
+                        } else {
+                            lineChartData = data.order;
+                            console.log(lineChartData);
+                            doDrawLineChart(data.order, inputDay);
+                            return data.order;
+                        }
+                    },
+                    error: function(jqXHR) {
+                        alert("操作失敗");
+                        console.log(jqXHR);
                     }
-                },
-                error: function(jqXHR) {
-                    alert("操作失敗");
-                    log(jqXHR);
-                }
-            });
-            var data = [{
-                    "date": "2020-09-06",
-                    "value": "30"
-                },
-                {
-                    "date": "2020-09-07",
-                    "value": "10"
-                },
-                {
-                    "date": "2020-09-08",
-                    "value": "20"
-                }
-            ];
+                });
+            }
+            getOrderLineChart(7);
 
 
-
-
+            //繪製30day報表
+            $("#btn-last30days").on('click', function() {
+                $("#label-lineChart").text("報表類別：" + $("#btn-last30days").text());
+                let data = getOrderLineChart(30);
+                //doDrawLineChart(data);
+            })
+            $("#btn-last7days").on('click', function() {
+                $("#label-lineChart").text("報表類別：" + $("#btn-last7days").text());
+                let data = getOrderLineChart(7);
+                //doDrawLineChart(data);
+            })
             // Now I can use this dataset:
-            function doDrawLineChart(data) {
-                var x_scale = null;
-                var y_scale = null;
-                var x_axis = null;
-                var xAxis = null;
-                var line;
+            function doDrawLineChart(data, timeFormat) {
+                $("#my_dataviz").empty();
+                // set the dimensions and margins of the graph
+                var margin = {
+                        top: 10,
+                        right: 200,
+                        bottom: 50,
+                        left: 100
+                    },
+                    width = 600 - margin.left - margin.right,
+                    height = 400 - margin.top - margin.bottom;
+
+                // append the svg object to the body of the page
+                svg = d3.select("#my_dataviz")
+                    .append("svg")
+                    .attr("width", width + margin.left + margin.right)
+                    .attr("height", height + margin.top + margin.bottom)
+                    .append("g")
+                    .attr("transform",
+                        "translate(" + margin.left + "," + margin.top + ")");
+
+                bisect = d3.bisector(function(d) {
+                    return d.date;
+                }).right;
+
+                // Create the circle that travels along the curve of chart
+                focus = svg
+                    .append('g')
+                    .append('circle')
+                    .style("fill", "none")
+                    .attr("stroke", "black")
+                    .attr('r', 8.5)
+                    .style("opacity", 0)
+
+                // Create the text that travels along the curve of chart
+                focusText = svg
+                    .append('g')
+                    .append('text')
+                    .style("opacity", 0)
+                    .attr("text-anchor", "left")
+                    .attr("alignment-baseline", "middle")
+
+                rect = svg.append('rect')
+                    .style("fill", "none")
+                    .style("pointer-events", "all")
+                    .attr('width', width)
+                    .attr('height', height)
+                    .on('mouseover', mouseover)
+                    .on('mousemove', mousemove)
+                    .on('mouseout', mouseout);
+                zoom = d3.zoom()
+                    .on("zoom", zoomed);
+                svg.call(zoom);
                 // Add X axis --> it is a date format
                 x_scale = d3.scaleTime()
                     .domain(d3.extent(data, function(d) {
-                        console.log(d.date);
+                        //console.log(d.date);
                         return d3.timeParse("%Y-%m-%d")(d.date);
 
                     }))
                     .range([0, width]);
-                xAxis = d3.axisBottom(x_scale);
+                if (timeFormat == 7) {
+                    xAxis = d3.axisBottom(x_scale)
+                        .ticks(7)
+                        .tickFormat(d3.timeFormat("%a"));
+                } else {
+                    xAxis = d3.axisBottom(x_scale)
+                        .ticks(30)
+                        .tickFormat(d3.timeFormat("%b %d"));
+                }
+
                 x_axis = svg.append("g")
                     .attr("transform", "translate(0," + height + ")")
-                    .call(xAxis);
+                    .call(xAxis)
+                    .selectAll("text")
+                    .style("text-anchor", "end")
+                    .attr("dx", "-.8em")
+                    .attr("dy", ".15em")
+                    .attr("transform", "rotate(-65)");
 
                 // Add Y axis
-                var y_scale = d3.scaleLinear()
+                y_scale = d3.scaleLinear()
                     .domain([0, d3.max(data, function(d) {
-                        console.log(d.amount);
+                        //console.log(d.amount);
                         return +d.amount;
                     })])
                     .range([height, 0]);
@@ -751,6 +816,7 @@
                     .attr("stroke-width", 1.5)
                     .attr("d", d3.line()
                         .x(function(d) {
+                            //console.log("x_scale",x_scale(d3.timeParse("%Y-%m-%d")(d.date)));
                             return x_scale(d3.timeParse("%Y-%m-%d")(d.date))
                         })
                         .y(function(d) {
@@ -760,6 +826,36 @@
                         .curve(d3.curveBasis)
                     )
 
+            }
+            // What happens when the mouse move -> show the annotations at the right positions.
+            function mouseover() {
+                focus.style("opacity", 1)
+                focusText.style("opacity", 1)
+            }
+            //Sun Sep 06 2020 19:27:48 GMT+0800 (台北標準時間)
+            var Ymd = d3.timeFormat('%Y-%m-%d');
+
+            function mousemove() {
+                // recover coordinate we need
+                //var x0 = x_scale.invert(Ymd(d3.mouse(this)[0]));
+                var x0 = Ymd(x_scale.invert((d3.mouse(this)[0])))
+                console.log("x0", x0);
+                var i = bisect(lineChartData, x0, 0);
+                console.log("i", i);
+                selectedData = lineChartData[i]
+                console.log("selectedData", selectedData);
+                focus
+                    .attr("cx", x_scale(d3.timeParse("%Y-%m-%d")(selectedData.date)))
+                    .attr("cy", y_scale(selectedData.amount))
+                focusText
+                    .html("x:" + selectedData.date + "<br>" + "y:" + selectedData.amount)
+                    .attr("x", x_scale(d3.timeParse("%Y-%m-%d")(selectedData.date)) + 15)
+                    .attr("y", y_scale(selectedData.amount))                    
+            }
+
+            function mouseout() {
+                focus.style("opacity", 0)
+                focusText.style("opacity", 0)
             }
 
             function zoomed() {
@@ -773,13 +869,10 @@
                 //     .x(function(d) {
                 //         return x_scale(new_x_scale(d.date))
                 //     }));
-                
+
                 console.log(00);
 
             }
-            //Read the data
-            //data = test(data);
-            //doDrawLineChart(data);
 
         });
     </script>

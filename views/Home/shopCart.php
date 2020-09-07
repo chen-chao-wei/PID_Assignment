@@ -18,7 +18,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
-                <ul class="nav">
+                <ul class="header nav">
                     <li class="nav-item">
                         <form id="admin" method="post">
                             <input type="submit" class="btn btn-link" style="margin: 2%;" value="賣家中心" />

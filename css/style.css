@@ -66,19 +66,22 @@ body{background-color: rgb(245 245 245);}
 .text-in{text-shadow: 1px 0px 0px #366a9b ;}
 #headerUl a{color:#FFC408;}
 #headerUl a.active{color:#193045;}
-/* ======================== */
-/*匯率*/
-#rate-header div{width: 100%;border-color: #193045;background-color: #193045; border-style: solid;margin: 1%; padding:1%}
-#rate-header label{margin:0;color: #FFC408;font-weight:bold;}
-#rate-body div{border-color: #193045; border-style: solid;border-radius:30px;margin: 1%; padding:1%}
-#rate-body label{margin:0;color: #193045;font-weight:bold;}
-#rate-body [id =rate-header] label{color: #FFC408;font-weight:bold;}
-#rate-body [id =rate-header] {background-color: #193045;}
-#rate-footer div{width: 100%;border-color: #193045;background-color: white; border-style: solid;margin: 1%; padding:1%; font-weight:bold;color:#193045;}
-#rate-footer label{margin:0;}
-/* ======================== */
 
-/**/
+/* ======================== */
+/*mall*/
+#admin input{color: white;}
+#admin input:hover{color: rgb(182, 177, 177); margin-right: 0.625rem;}
+#logout input{color: white;}
+#logout input:hover{color: rgb(182, 177, 177); margin-right: 0.625rem;}
+#carousel-inner h4{color:#fff;text-shadow: -3px 1px 0px red ;}
+#carousel-inner h4:hover{text-shadow: -3px 1px 0px rgb(25, 92, 42) ; margin-right: 0.625rem;}
+.card img{box-shadow: 0px 0px 15px #193045 ;}
+#shopCartInput{color: white;}
+/* ======================== */
+/*admin*/
+#listDiv img{height: 70px;}
+.listDiv{box-shadow: 0px 0px 5px #193045 ;margin-bottom: 0.625rem;}
+/* ======================== */
 #description {border-style: solid; box-shadow:1px 2px 2px  #193045;}
 
 #action-title h5{box-shadow:1px 2px 2px 1px #0c1f31; width: 100%;border-color: #193045;background-color: #193045; border-style: solid;color:#FFC408;margin: 1%; padding:1%}
