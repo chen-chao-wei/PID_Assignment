@@ -16,7 +16,27 @@
 </head>
 
 <body>
+  <div class="row">
+    <div class="otherHeader col-md-12">
+      <ul class=" nav">
+        <li class="nav-item">
+          <a class="header-link nav-link" href="mall.php?admin=">賣家中心</a>
+        </li>
+        <li class="nav-item">
+          <a class="header-link nav-link" href="/PID_Assignment/home/mall">回購物中心</a>
+        </li>
+        <li class="nav-item dropdown ml-md-auto">
+          <div class="row">
+            <a class="header-link nav-link fa fa-question-circle d-flex align-items-center" href="#"> 幫助中心</a>
+           
+          </div>
+
+        </li>
+      </ul>
+    </div>
+  </div>
   <div class="container">
+
 
     <div class="row">
       <div class="col-sm-3">
@@ -111,7 +131,7 @@
   </div>
 
   <script src="../js/jquery.js"></script>
-    <script src="../js/bootstrap.min.js"></script>
+  <script src="../js/bootstrap.min.js"></script>
   <script type="text/javascript" src="../js/jquery.toast.js"></script>
 
   <script src="http://code.jquery.com/jquery-1.9.1.js"></script>

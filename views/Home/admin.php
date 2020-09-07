@@ -23,37 +23,25 @@
 <body>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-12">
-                <ul class="header nav" >
+            <div class="otherHeader col-md-12">
+                <ul class=" nav">
                     <li class="nav-item">
-                        <form id="admin" method="post">
-                            <input type="submit" class="btn btn-link" style="margin: 2%;" value="賣家中心" />
-                            <!-- <a class="header-link nav-link" type="submit">賣家中心</a>     -->
-                            <input type="hidden" name="admin" value="true" />
-                        </form>
+                        <a class="header-link nav-link" href="mall.php?admin=">賣家中心</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/PID_Assignment/home/mall">回購物中心</a>
+                        <a class="header-link nav-link" href="/PID_Assignment/home/mall">回購物中心</a>
                     </li>
                     <li class="nav-item dropdown ml-md-auto">
                         <div class="row">
-                            <a class="nav-link " href="#"> 幫助中心</a>
-                            <form id="logout" method="post">
-                                <input type="hidden" name="logout" value="true" />
-                                <input type="submit" class="pull-right btn btn-link" style="margin: 2%;" value="<?= $_SESSION['userName'] ?>/登出" />
-                            </form>
+                            <a class="header-link nav-link fa fa-question-circle d-flex align-items-center" href="#"> 幫助中心</a>
+                            <a class="header-link nav-link" href="mall.php?logout="><?= $_SESSION['userName'] ?> / 登出 </a>
                         </div>
-                        <div class="col">
 
-                        </div>
-                        <div class="col">
-
-                        </div>
                     </li>
                 </ul>
             </div>
         </div>
-        <div class="row">
+        <div class="body row">
             <div class="col-md-2">
                 <div class="col">
                     <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
@@ -74,7 +62,7 @@
 
                                     </div>
                                     <div id="formFooter">
-                                        <button id="managementButton" class="btn btn-primary"type="button" onclick="management()">確認操作</button>
+                                        <button id="managementButton" class="btn btn-success" type="button" onclick="management()">確認操作</button>
                                     </div>
                                 </form>
                             </div>
@@ -146,7 +134,7 @@
                                 </div>
                                 <div class="row">&nbsp;</div>
                                 <div class="row">
-                                    <button id="btn-last7days" class="btn btn-primary">最近7天銷售額</button> &nbsp;                                    
+                                    <button id="btn-last7days" class="btn btn-primary">最近7天銷售額</button> &nbsp;
                                     <button id="btn-last30days" class="btn btn-success">最近30天銷售額</button>
                                 </div>
 
@@ -171,20 +159,24 @@
     <!-- JavaScript -->
 
     <script>
-        $('#v-pills-management-tab').on('click', function(e) {
-            e.preventDefault()
-            getMemberInfo();
-            $("#listDiv").empty();
-            cancel();
-        })
-        $('#v-pills-commodity-tab').on('click', function(e) {
-            e.preventDefault()
-            $('usersManagement').empty();
-
-        })
-
         $(document).ready(function() {
+            $('#v-pills-management-tab').on('click', function(e) {
+                e.preventDefault()
+                getMemberInfo();
+                $("#listDiv").empty();
+                cancel();
+            })
+            $('#v-pills-myData-tab').on('click', function(e) {
+                e.preventDefault()
+                getOrderLineChart(7);
+                $("#listDiv").empty();
+                cancel();
+            })
+            $('#v-pills-commodity-tab').on('click', function(e) {
+                e.preventDefault()
+                $('usersManagement').empty();
 
+            })
             getMemberInfo = function() {
                 $("#usersManagement").empty();
                 $("#managementButton").text("確認操作");
@@ -451,6 +443,7 @@
                     category = list['category'][i];
                     price = list['price'][i];
                     quantity = list['quantity'][i];
+                    quantitySold = list['quantitySold'][i];
                     commodityID = list['commodityID'][i];
                     src = "data:image/jpeg;base64," + (list['src'][i]); // <img>中src屬性除了接url外也可以直接接Base64字串
                     let idName = "listDivRow"
@@ -467,7 +460,7 @@
                     <label>商品名稱:</label><span class="name">${name}</span><br>
                     <label>價格:</label><span class="price">${price}</span><br>
                     <label>數量:</label><span class="quantity">${quantity}</span><br>
-                    <label>售出:</label><span class="quantitySold">0</span>`);
+                    <label>售出:</label><span class="quantitySold">${quantitySold}</span>`);
                     $('#' + idName + ' #list-footer').append(`
                     <button onclick="insertForm(${idName})" value="${idName}">編輯</button>
                     <button onclick="delCommodity(${idName})" value="${idName}">刪除</button>`)
@@ -519,7 +512,7 @@
                     },
                     success: function(data) {
                         if (data.detail) {
-                            console.log(data.detail);
+                            //console.log(data.detail);
                             doDetailTable($("#tr-member" + id), data.detail);
                             //doMemberTable(data.detail);
 
@@ -540,7 +533,7 @@
                 document.getElementById('managementButton').onclick = function() {
                     getMemberInfo();
                 }
-                console.log(idx, data);
+                //console.log(idx, data);
                 $("#usersManagement").empty();
                 let rowElements = [];
                 rowElements.push(
@@ -553,7 +546,7 @@
                 $("#usersManagement").append(rowElements);
                 let nowOrderID = 0;
                 let total = 0;
-                console.log(data.length);
+                //console.log(data.length);
                 count = data.length - 1;
                 $.each(data, function(key, value) {
                     total += value['amount'];
@@ -565,12 +558,12 @@
                     tableElements.appendTo("#tab-detail");
                     if (key != count) {
                         if (nowOrderID != data[key + 1]['orderID']) {
-                            let tableTotal = $(`<tr><td>總計</td><td></td><td></td><td></td><td>${total}</td><td></td><td></td></tr>`);
+                            let tableTotal = $(`<tr><td>總計</td><td></td><td></td><td></td><td></td><td>$${total}</td><td></td><td></td></tr>`);
                             tableTotal.appendTo("#tab-detail");
                             total = 0;
                         }
                     } else {
-                        let tableTotal = $(`<tr class="tableTotal"><td>總計</td><td></td><td></td><td></td><td>${total}</td><td></td><td></td></tr>`);
+                        let tableTotal = $(`<tr class="tableTotal"><td>總計</td><td></td><td></td><td></td><td></td><td>$${total}</td><td></td><td></td></tr>`);
                         tableTotal.appendTo("#tab-detail");
                     }
 
@@ -692,7 +685,7 @@
                             console.log(data.msg);
                         } else {
                             lineChartData = data.order;
-                            console.log(lineChartData);
+                            //console.log(lineChartData);
                             doDrawLineChart(data.order, inputDay);
                             return data.order;
                         }
@@ -768,9 +761,9 @@
                     .on('mouseover', mouseover)
                     .on('mousemove', mousemove)
                     .on('mouseout', mouseout);
-                zoom = d3.zoom()
-                    .on("zoom", zoomed);
-                svg.call(zoom);
+                // zoom = d3.zoom()
+                //     .on("zoom", zoomed);
+                // svg.call(zoom);
                 // Add X axis --> it is a date format
                 x_scale = d3.scaleTime()
                     .domain(d3.extent(data, function(d) {
@@ -820,10 +813,10 @@
                             return x_scale(d3.timeParse("%Y-%m-%d")(d.date))
                         })
                         .y(function(d) {
-                            console.log("value", d.amount);
+                            //console.log("value", d.amount);
                             return y_scale(d.amount)
                         })
-                        .curve(d3.curveBasis)
+                        //.curve(d3.curveBasis)
                     )
 
             }
@@ -839,18 +832,18 @@
                 // recover coordinate we need
                 //var x0 = x_scale.invert(Ymd(d3.mouse(this)[0]));
                 var x0 = Ymd(x_scale.invert((d3.mouse(this)[0])))
-                console.log("x0", x0);
+                //console.log("x0", x0);
                 var i = bisect(lineChartData, x0, 0);
-                console.log("i", i);
+                //console.log("i", i);
                 selectedData = lineChartData[i]
-                console.log("selectedData", selectedData);
+                //console.log("selectedData", selectedData);
                 focus
                     .attr("cx", x_scale(d3.timeParse("%Y-%m-%d")(selectedData.date)))
                     .attr("cy", y_scale(selectedData.amount))
                 focusText
                     .html("x:" + selectedData.date + "<br>" + "y:" + selectedData.amount)
                     .attr("x", x_scale(d3.timeParse("%Y-%m-%d")(selectedData.date)) + 15)
-                    .attr("y", y_scale(selectedData.amount))                    
+                    .attr("y", y_scale(selectedData.amount))
             }
 
             function mouseout() {

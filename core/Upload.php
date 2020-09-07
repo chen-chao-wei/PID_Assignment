@@ -267,9 +267,10 @@ try {
             $quantity    = array();
             $price       = array();
             $description = array();
-            $quantity = array();
+            $quantity    = array();
+            $quantitySold = array();
             $base64Src   = array();
-            $sql = sprintf("select userID,LPAD(commodityID,10,0) as commodityID,name,category,quantity,price,description,img from commodity where userID=$userID");
+            $sql = sprintf("select userID,LPAD(commodityID,10,0) as commodityID,name,category,quantity,quantitySold,price,description,img from commodity where userID=$userID");
             $result = $conn->select($sql);
             //var_dump($result);
             foreach ($result as $item) {
@@ -277,6 +278,7 @@ try {
                 array_push($name, $item['name']);
                 array_push($category, $item['category']);
                 array_push($quantity, $item['quantity']);
+                array_push($quantitySold, $item['quantitySold']);
                 array_push($price, $item['price']);
                 array_push($description, $item['description']);
                 array_push($base64Src, base64_encode($item['img']));
@@ -288,6 +290,7 @@ try {
                 'name'        => $name,
                 'category'    => $category,
                 'quantity'    => $quantity,
+                'quantitySold'=> $quantitySold,
                 'price'       => $price,
                 'description' => $description,
                 'src'         => $base64Src

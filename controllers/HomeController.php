@@ -69,7 +69,8 @@ class HomeController extends Controller
     }
     function mall()
     {
-        if (isset($_POST["logout"])&&isset($_SESSION['userID'])) {
+        
+        if (isset($_GET["logout"])&&isset($_SESSION['userID'])) {
             $message = $_SESSION["userName"] . "您已登出.";
             echo "<script type='text/javascript'>alert('$message');</script>";
             unset($_SESSION['userName']);
@@ -78,7 +79,7 @@ class HomeController extends Controller
             $this->view("Home/mall");
             exit();
         }
-        if (isset($_POST["admin"])) {
+        if (isset($_GET["admin"])) {
             if (!isset($_SESSION["userID"]) || ($_SESSION["userID"] == "")) {
                 $this->Redirect("login");
                 exit();
@@ -94,7 +95,7 @@ class HomeController extends Controller
                 }
             }
         }  
-        if (isset($_POST["shopCart"])) {
+        if (isset($_GET["shopCart"])) {
             if (!isset($_SESSION["userID"]) || ($_SESSION["userID"] == "")) {
                 $this->Redirect("login");
                 exit();
@@ -107,7 +108,7 @@ class HomeController extends Controller
         $this->view("Home/mall");
     }
     function admin()
-    {
+    {        
         if (!isset($_SESSION["userID"]) || ($_SESSION["userID"] == "")) {
             $this->Redirect("login");
             exit();
@@ -125,32 +126,7 @@ class HomeController extends Controller
         //echo $_SESSION['identity'].$_SESSION['userName'];
     }
     function shopCart()
-    {
-        if (isset($_POST["logout"])&&isset($_SESSION['userID'])) {
-            $message = $_SESSION["userName"] . "您已登出.";
-            echo "<script type='text/javascript'>alert('$message');</script>";
-            unset($_SESSION['userName']);
-            unset($_SESSION['userID']);
-            unset($_SESSION['identity']);
-            $this->view("Home/mall");
-            exit();
-        }
-        if (isset($_POST["admin"])) {
-            if (!isset($_SESSION["userID"]) || ($_SESSION["userID"] == "")) {
-                $this->Redirect("login");
-                exit();
-            } else {
-                if ($_SESSION['identity'] == "1" ) {
-                    $this->view("Home/admin");
-                    exit();
-                } else {
-                    $message = "會員您好,請先申請成為賣家";
-                    echo "<script type='text/javascript'>alert('$message');</script>";                   
-                    $this->view("Home/mall");
-                    exit();
-                }
-            }
-        }
+    {        
         if (!isset($_SESSION["userID"]) || ($_SESSION["userID"] == "")) {
             $this->Redirect("login");
             exit();

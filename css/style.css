@@ -5,7 +5,7 @@
     border-left: 5px solid #eee;
 }
 .tab-title{list-style:none;}
-
+.shadow-sm{box-shadow: 1px 1px 2px 2px #366a9b ;}
 
 
 #tab-demo > ul > li{ display:inline-block; vertical-align:top;font-family:'微軟正黑體'; margin:0 -1px -1px 0 ; border:1px solid #BCBCBC; height:50px; line-height:25px; background:#cdcdcd;padding:0 15px;list-style:none; box-sizing:border-box;}
@@ -43,15 +43,26 @@ tr:last-child td:last-child{
   }
 #tab-info{border-collapse: initial;}
 /* ======================== */
-.header{
+.header{    
     background-color: rgb(25, 92, 42);
     position: static;
     z-index: 1;
+}
+.otherHeader{
+    background-color: rgb(25, 92, 42);
+    padding:1.25rem;
+    background-clip: border-box;
+}
+.body{
+    padding-top:1.25rem;
 }
 .content {padding: 16px; }
 .header a{color: white; margin-right: 0.625rem;}
 .header-link:hover{color: rgb(182, 177, 177); margin-right: 0.625rem;}
 .header button{color: white; margin: 0.625rem;}
+.otherHeader a{color: white; margin-right: 0.625rem;}
+.otherHeader-link:hover{color: rgb(182, 177, 177); margin-right: 0.625rem;}
+.otherHeader button{color: white; margin: 0.625rem;}
 body{background-color: rgb(245 245 245);}
 .header .navbar{background-color: rgb(25, 92, 42);}
 #div-carousel img{height: 300px;}
@@ -73,9 +84,14 @@ body{background-color: rgb(245 245 245);}
 #admin input:hover{color: rgb(182, 177, 177); margin-right: 0.625rem;}
 #logout input{color: white;}
 #logout input:hover{color: rgb(182, 177, 177); margin-right: 0.625rem;}
-#carousel-inner h4{color:#fff;text-shadow: -3px 1px 0px red ;}
-#carousel-inner h4:hover{text-shadow: -3px 1px 0px rgb(25, 92, 42) ; margin-right: 0.625rem;}
-.card img{box-shadow: 0px 0px 15px #193045 ;}
+#carousel-inner h4{color:#fff;text-shadow: -2px 1px 0px red ;}
+#carousel-inner h4:hover{text-shadow: -2px 1px 0px rgb(25, 92, 42) ; margin-right: 0.625rem;}
+#carousel-inner p{color:#fff;text-shadow: -2px 1px 0px rgb(25, 92, 42) ;}
+#carousel-inner p:hover{text-shadow: -2px 1px 0px red ; margin-right: 0.625rem;}
+.card img{height: 100px;padding-bottom: 0.255rem;}
+.card-price-text{color: #ee4d2d;}
+.card .card-price-text{padding: inherit;}
+.card .pull-right{padding: inherit;}
 #shopCartInput{color: white;}
 /* ======================== */
 /*admin*/

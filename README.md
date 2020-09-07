@@ -49,4 +49,18 @@
 ### TODO: 報表,UI,銷售額 商品排名
 ## 0907
   - 銷售報表
-### TODO: 報表,UI,商品排名
+  - 搜尋功能
+  - UI調整
+  - 功能測試
+  - 加入廣告
+  ## 廣告
+  ![image](https://github.com/weichen-chungyo/PID_Assignment/blob/master/viewImages/0908.jpg)
+  ## 主頁-商城
+  ![image](https://github.com/weichen-chungyo/PID_Assignment/blob/master/viewImages/0908(2).jpg)
+  ## 會員管理
+  ![image](https://github.com/weichen-chungyo/PID_Assignment/blob/master/viewImages/0908(3).jpg)
+  ## 商品管理
+  ![image](https://github.com/weichen-chungyo/PID_Assignment/blob/master/viewImages/0908(4).jpg)
+  ## 銷售數據
+  ![image](https://github.com/weichen-chungyo/PID_Assignment/blob/master/viewImages/0908(5).jpg)
+### TODO: 

@@ -17,38 +17,26 @@
 <body>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-12">
-                <ul class="header nav">
+            <div class="otherHeader col-md-12">
+                <ul class=" nav">
                     <li class="nav-item">
-                        <form id="admin" method="post">
-                            <input type="submit" class="btn btn-link" style="margin: 2%;" value="賣家中心" />
-                            <!-- <a class="header-link nav-link" type="submit">賣家中心</a>     -->
-                            <input type="hidden" name="admin" value="true" />
-                        </form>
+                        <a class="header-link nav-link" href="mall.php?admin=">賣家中心</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/PID_Assignment/home/mall">回購物中心</a>
+                        <a class="header-link nav-link" href="/PID_Assignment/home/mall">回購物中心</a>
                     </li>
 
                     <li class="nav-item dropdown ml-md-auto">
                         <div class="row">
-                            <a class="nav-link " href="#"> 幫助中心</a>
-                            <form id="logout" method="post">
-                                <input type="hidden" name="logout" value="true" />
-                                <input type="submit" class="pull-right btn btn-link" style="margin: 2%;" value="<?= $_SESSION['userName'] ?>/登出" />
-                            </form>
+                            <a class="header-link nav-link fa fa-question-circle d-flex align-items-center" href="#"> 幫助中心</a>
+                            <a class="header-link nav-link" href="mall.php?logout="><?=$_SESSION['userName']?> / 登出 </a>
                         </div>
-                        <div class="col">
-
-                        </div>
-                        <div class="col">
-
-                        </div>
+                        
                     </li>
                 </ul>
             </div>
         </div>
-        <div class="row">
+        <div class="body row">
             <div class="col-md-2">
                 <div class="col">
                     <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
@@ -118,7 +106,7 @@
                     console.log(list);
                     $("#listDiv").empty();
                     $("#listDiv").append(`                        
-                        <div id="listDivRow0" class="row" style="margin:1%">                        
+                        <div id="listDivRow0" class="shadow-sm p-3 mb-5 bg-white rounded row" style="margin:1%">                        
                             <div id="list-check" class="col-md-2 ">
                             
                             </div>
@@ -221,6 +209,7 @@
                                     console.log(data.successMsg);
                                     alert(data.successMsg);
                                     checkShopCart();
+                                    checkDetail();
                                 } else {
                                     alert(data.errorMsg);
                                     checkShopCart();
