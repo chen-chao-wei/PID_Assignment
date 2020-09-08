@@ -114,7 +114,8 @@
                                         <label for="exampleFormControlFile1">預覽商品圖片</label>
                                         <div id="previewDiv"></div>
                                         <div class="offset-4 col-10">
-                                            <input id="uploadImage" type="file" name="image" class="form-control-file" id="exampleFormControlFile1">
+                                            <input id="uploadImage" type="file" name="image" class="custom-file-input">                                            
+                                            <label class="custom-file-label" for="image" style="width:200px">Choose file...</label>
                                         </div>
 
                                     </div>
@@ -125,7 +126,7 @@
                                         </div>
                                     </div>
                                 </form>
-                                <button id="showButton" type="button" class="btn btn-primary" value="">已上架商品</button>
+                                <button id="showButton" type="button" class="btn btn-success" value="">已上架商品</button>
 
                             </div>
                             <div class="tab-pane fade" id="v-pills-myData" role="tabpanel" aria-labelledby="v-pills-myData-tab">
@@ -537,7 +538,7 @@
                 $("#usersManagement").empty();
                 let rowElements = [];
                 rowElements.push(
-                    $("<table id='tab-detail'></table>")
+                    $("<table id='tab-detail' class='table-hover'></table>")
                     .addClass("table ")
                     .append($('<thead></thead>').append(`<tr><th scope="col">訂單編號</th><th scope="col">
                     時間</th><th scope="col">品項</th><th scope="col">單價</th><th scope="col">數量</th><th scope="col">金額</th>

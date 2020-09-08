@@ -8,6 +8,9 @@
     <link href="/PID_Assignment/css/jquery.toast.css" rel="stylesheet">
     <link href="/PID_Assignment/css/style.css" rel="stylesheet">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- <link rel="stylesheet" href="/PID_Assignment/css/alert.css">     -->
+
+
     <title>mall</title>
 </head>
 
@@ -52,7 +55,7 @@
 
                         <form class="form-inline">
                             <input id="search" class="form-control mr-sm-8" type="text" />
-                            <button style="background-color: #1491fd; border-style: solid; border-color: #fff;"class="btn  my-2 my-sm-0" type="submit">
+                            <button style="background-color: #1491fd; border-style: solid; border-color: #fff;" class="btn  my-2 my-sm-0" type="submit">
                                 Search
                             </button>
                             <a class="header-link" href="#">熱門</a>&nbsp;<a class="header-link" href="#">關鍵字</a>
@@ -71,9 +74,9 @@
         <div id="container" class="row">
             <div class="col-md-2">
             </div>
-            <div class="col-md-8">                
-                <div id="Main-of-this-season" class="d-flex align-items-center justify-content-center"style="margin:.625rem;height:100px ;background-color:rgb(236 95 45);color: #fff;" >                    
-                        <h1>本季主打</h1>                    
+            <div class="col-md-8">
+                <div id="Main-of-this-season" class="d-flex align-items-center justify-content-center" style="margin:.625rem;height:100px ;background-color:rgb(236 95 45);color: #fff;">
+                    <h1>本季主打</h1>
                 </div>
                 <div id="div-carousel" class="content row">
                     <div class="carousel slide w-100 shadow-sm" data-interval="3000" data-ride="carousel" style="padding-bottom: 1%;margin:.625rem;" id="carousel-46838">
@@ -101,13 +104,13 @@
                                 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span>
                                 <span class="sr-only">Next</span>
                             </a></h1>
-                            
+
                     </div>
                 </div>
-                <div id="classic-train" class="d-flex align-items-center justify-content-center"style="margin:.625rem;height:100px ;background-color:rgb(255 128 76);color: #fff;" >                    
-                        <h1>經典火車</h1>                    
+                <div id="classic-train" class="d-flex align-items-center justify-content-center" style="margin:.625rem;height:100px ;background-color:rgb(255 128 76);color: #fff;">
+                    <h1>經典火車</h1>
                 </div>
-                
+
                 <div id=commodity-content>
                     <div id="commodity-group-0" class="card-group ">
                     </div>
@@ -131,14 +134,14 @@
     <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" style="color:rgb(255, 187, 0);background-color:rgb(238, 78, 46);" role="document">
             <div class="modal-content" style="border:none;color:rgb(255, 187, 0);background-color:rgb(238, 78, 46);">
-                <div class="">                
+                <div class="">
                     <button type="button" class="pull-right close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="d-flex justify-content-center">
-                <h1  style="color:white"> <i class="fa fa-shopping-bag" aria-hidden="true" ></i> 調皮購物</h1>
-                   
+                    <h1 style="color:white"> <i class="fa fa-shopping-bag" aria-hidden="true"></i> 調皮購物</h1>
+
                 </div>
                 <div class="modal-header d-flex justify-content-center" style="border:none;">
                     <h5 class="modal-title font-weight-bold" id="exampleModalLongTitle">2020商城最低價日</h5>
@@ -160,9 +163,59 @@
     <script src="/PID_Assignment/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/PID_Assignment/js/jquery.toast.js"></script>
     <style class="mall-search-style"></style>
+    <script src="/PID_Assignment/js/alert.js"></script>
     <script>
-       
+        window.alert = function(name) {
+            var iframe = document.createElement("IFRAME");
+            iframe.style.display = "none";
+            iframe.setAttribute("src", 'data:text/plain,');
+            document.documentElement.appendChild(iframe);
+            window.frames[0].window.alert(name);
+            iframe.parentNode.removeChild(iframe);
+        }
+
+        var wConfirm = window.confirm;
+        window.confirm = function(message) {
+            try {
+                var iframe = document.createElement("IFRAME");
+                iframe.style.display = "none";
+                iframe.setAttribute("src", 'data:text/plain,');
+                document.documentElement.appendChild(iframe);
+                var alertFrame = window.frames[0];
+                var iwindow = alertFrame.window;
+                if (iwindow == undefined) {
+                    iwindow = alertFrame.contentWindow;
+                }
+                var result = iwindow.confirm(message);
+                iframe.parentNode.removeChild(iframe);
+                return result;
+            } catch (exc) {
+                return wConfirm(message);
+            }
+        }
+
+        function showToast(heading, message) {
+            $.toast({
+                text: message, // Text that is to be shown in the toast
+                heading: heading, // Optional heading to be shown on the toast
+                icon: 'warning', // Type of toast icon
+                showHideTransition: 'fade', // fade, slide or plain
+                allowToastClose: true, // Boolean value true or false
+                hideAfter: 2000, // false to make it sticky or number representing the miliseconds as time after which toast needs to be hidden
+                stack: 5, // false if there should be only one toast at a time or a number representing the maximum number of toasts to be shown at a time
+                position: 'top-right', // bottom-left or bottom-right or bottom-center or top-left or top-right or top-center or mid-center or an object representing the left, right, top, bottom values
+                textAlign: 'left', // Text alignment i.e. left, right or center
+                loader: true, // Whether to show loader or not. True by default
+                loaderBg: '#9ec600', // Background color of the toast loader
+                beforeShow: function() {}, // will be triggered before the toast is shown
+                afterShown: function() {}, // will be triggered after the toat has been shown
+                beforeHide: function() {}, // will be triggered before the toast gets hidden
+                afterHidden: function() {} // will be triggered after the toast has been hidden
+            });
+        }
+
         $(document).ready(function() {
+
             $("#exampleModalCenter").modal({
                 show: true
             });
@@ -320,9 +373,11 @@
                         success: function(data) {
                             //$("#showBox").attr("src", data.src);
                             if (data.errorMsg != undefined) {
+                                //showToast("Hint", data.errorMsg);
                                 alert(data.errorMsg);
                                 console.log(data.errorMsg);
                             } else {
+                                //showToast("Hint", data.successMsg);
                                 alert(data.successMsg);
                             }
 
@@ -335,7 +390,7 @@
             }
 
             function checkAdd() {
-                var msg = "放入購物車？"
+                let msg ="加入購物車？"
                 if (confirm(msg) == true) {
                     return true;
                 } else {

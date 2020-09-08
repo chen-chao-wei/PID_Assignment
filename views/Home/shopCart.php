@@ -284,7 +284,7 @@
                     $("#userOrder").empty();
                     let rowElements = [];
                     rowElements.push(
-                        $("<table id='tab-detail'></table>")
+                        $("<table id='tab-detail' class='table-hover'></table>")
                         .addClass("table ")
                         .append($('<thead></thead>').append(`<tr><th scope="col">訂單編號</th><th scope="col">
                     時間</th><th scope="col">品項</th><th scope="col">單價</th><th scope="col">數量</th><th scope="col">金額</th>
