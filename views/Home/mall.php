@@ -52,7 +52,7 @@
 
                         <form class="form-inline">
                             <input id="search" class="form-control mr-sm-8" type="text" />
-                            <button class="btn btn-primary my-2 my-sm-0" type="submit">
+                            <button style="background-color: #1491fd; border-style: solid; border-color: #fff;"class="btn  my-2 my-sm-0" type="submit">
                                 Search
                             </button>
                             <a class="header-link" href="#">熱門</a>&nbsp;<a class="header-link" href="#">關鍵字</a>
@@ -71,11 +71,9 @@
         <div id="container" class="row">
             <div class="col-md-2">
             </div>
-            <div class="col-md-8">
-                <div id="Main-of-this-season" style="height:80px;background-color: whitesmoke;" class="progress">
-                    <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;height:80px ;margin:.625rem;padding-top: 1.25rem;background-clip:content-box;">
-                        <h1>本季主打</h1>
-                    </div>
+            <div class="col-md-8">                
+                <div id="Main-of-this-season" class="d-flex align-items-center justify-content-center"style="margin:.625rem;height:100px ;background-color:rgb(236 95 45);color: #fff;" >                    
+                        <h1>本季主打</h1>                    
                 </div>
                 <div id="div-carousel" class="content row">
                     <div class="carousel slide w-100 shadow-sm" data-interval="3000" data-ride="carousel" style="padding-bottom: 1%;margin:.625rem;" id="carousel-46838">
@@ -103,19 +101,13 @@
                                 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span>
                                 <span class="sr-only">Next</span>
                             </a></h1>
-
+                            
                     </div>
                 </div>
-                <div id="welcome-pakage" style="height:100px ;background-color: whitesmoke;" class="progress">
-                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;height:100px ;margin:.625rem;padding-bottom: 1.25rem;background-clip:content-box;">
-                        <h1>我是廣告</h1>
-                    </div>
+                <div id="classic-train" class="d-flex align-items-center justify-content-center"style="margin:.625rem;height:100px ;background-color:rgb(255 128 76);color: #fff;" >                    
+                        <h1>經典火車</h1>                    
                 </div>
-                <div id="classic-train" style="height:50px; background-color: whitesmoke;" class="progress">
-                    <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;height:50px ;margin:.625rem;background-clip:content-box;">
-                        <h1>經典火車</h1>
-                    </div>
-                </div>
+                
                 <div id=commodity-content>
                     <div id="commodity-group-0" class="card-group ">
                     </div>
@@ -257,8 +249,8 @@
                             <h5 class="card-title" value="">商品名稱</h5>
                             <p class="card-text">商品描述</p>
                             <div class="row">
-                                <div class= "col-md-6"><p class="card-price-text">1</p></div>
-                                <div class= "col-md-6"><p class="pull-right card-text"><small class="text-muted">已售出</small></p></div>
+                                <div class= "col-md-7"><p class="card-price-text">1</p></div>
+                                <div class= "col-md-5"><p class="pull-right card-text"><small class="text-muted">已售出</small></p></div>
                             </div>
                             </div>
                             </div>`)

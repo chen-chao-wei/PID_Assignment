@@ -44,12 +44,12 @@ tr:last-child td:last-child{
 #tab-info{border-collapse: initial;}
 /* ======================== */
 .header{    
-    background-color: rgb(25, 92, 42);
+    background-color: #ee4d2d;
     position: static;
     z-index: 1;
 }
 .otherHeader{
-    background-color: rgb(25, 92, 42);
+    background-color:#ee4d2d;
     padding:1.25rem;
     background-clip: border-box;
 }
@@ -64,7 +64,7 @@ tr:last-child td:last-child{
 .otherHeader-link:hover{color: rgb(182, 177, 177); margin-right: 0.625rem;}
 .otherHeader button{color: white; margin: 0.625rem;}
 body{background-color: rgb(245 245 245);}
-.header .navbar{background-color: rgb(25, 92, 42);}
+.header .navbar{background-color: #ee4d2d;}
 #div-carousel img{height: 300px;}
 /*圖片操作區*/
 /* .card-group div{ border-radius:30px;} padding: 0 .3125rem;*/
@@ -85,8 +85,8 @@ body{background-color: rgb(245 245 245);}
 #logout input{color: white;}
 #logout input:hover{color: rgb(182, 177, 177); margin-right: 0.625rem;}
 #carousel-inner h4{color:#fff;text-shadow: -2px 1px 0px red ;}
-#carousel-inner h4:hover{text-shadow: -2px 1px 0px rgb(25, 92, 42) ; margin-right: 0.625rem;}
-#carousel-inner p{color:#fff;text-shadow: -2px 1px 0px rgb(25, 92, 42) ;}
+#carousel-inner h4:hover{text-shadow: -2px 1px 0px #ee4d2d ; margin-right: 0.625rem;}
+#carousel-inner p{color:#fff;text-shadow: -2px 1px 0px #ee4d2d ;}
 #carousel-inner p:hover{text-shadow: -2px 1px 0px red ; margin-right: 0.625rem;}
 .card img{height: 100px;padding-bottom: 0.255rem;}
 .card-price-text{color: #ee4d2d;}
