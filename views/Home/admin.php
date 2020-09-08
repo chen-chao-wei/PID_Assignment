@@ -51,7 +51,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div id="div-middle" class="col-md-6">
                 <div class="row">
                     <div class="col">
                         <div class="tab-content" id="v-pills-tabContent">
@@ -114,7 +114,7 @@
                                         <label for="exampleFormControlFile1">預覽商品圖片</label>
                                         <div id="previewDiv"></div>
                                         <div class="offset-4 col-10">
-                                            <input id="uploadImage" type="file" name="image" class="custom-file-input">                                            
+                                            <input id="uploadImage" type="file" name="image" class="custom-file-input">
                                             <label class="custom-file-label" for="image" style="width:200px">Choose file...</label>
                                         </div>
 
@@ -148,7 +148,7 @@
                 </div>
 
             </div>
-            <div class="col-md-4">
+            <div id="div-right" class="col-md-4">
                 <div id="listDiv">
 
                 </div>
@@ -161,6 +161,8 @@
 
     <script>
         $(document).ready(function() {
+            $("#div-middle").attr("class", "col-md-9");
+            $("#div-right").hide();
             $('#v-pills-management-tab').on('click', function(e) {
                 e.preventDefault()
                 getMemberInfo();
@@ -169,13 +171,23 @@
             })
             $('#v-pills-myData-tab').on('click', function(e) {
                 e.preventDefault()
-                getOrderLineChart(7);
                 $("#listDiv").empty();
+                getOrderLineChart(7);
                 cancel();
             })
             $('#v-pills-commodity-tab').on('click', function(e) {
                 e.preventDefault()
                 $('usersManagement').empty();
+            })
+            $('a[data-toggle="pill"]').on('shown.bs.tab', function(e) {
+                console.log(e.target.id);
+                if (e.target.id == 'v-pills-commodity-tab') {
+                    $("#div-middle").attr("class", "col-md-6");
+                    $("#div-right").show();
+                } else {
+                    $("#div-middle").attr("class", "col-md-9");
+                    $("#div-right").hide();
+                }
 
             })
             getMemberInfo = function() {
@@ -716,13 +728,13 @@
                 $("#my_dataviz").empty();
                 // set the dimensions and margins of the graph
                 var margin = {
-                        top: 10,
+                        top: 100,
                         right: 200,
                         bottom: 50,
                         left: 100
                     },
-                    width = 600 - margin.left - margin.right,
-                    height = 400 - margin.top - margin.bottom;
+                    width = 900 - margin.left - margin.right,
+                    height = 500 - margin.top - margin.bottom;
 
                 // append the svg object to the body of the page
                 svg = d3.select("#my_dataviz")
@@ -751,7 +763,7 @@
                     .append('g')
                     .append('text')
                     .style("opacity", 0)
-                    .attr("text-anchor", "left")
+                    .attr("text-anchor", "middle")
                     .attr("alignment-baseline", "middle")
 
                 rect = svg.append('rect')
@@ -842,9 +854,10 @@
                     .attr("cx", x_scale(d3.timeParse("%Y-%m-%d")(selectedData.date)))
                     .attr("cy", y_scale(selectedData.amount))
                 focusText
-                    .html("x:" + selectedData.date + "<br>" + "y:" + selectedData.amount)
-                    .attr("x", x_scale(d3.timeParse("%Y-%m-%d")(selectedData.date)) + 15)
-                    .attr("y", y_scale(selectedData.amount))
+                    .html("日期:" + selectedData.date + "-" + "銷售額:" + selectedData.amount)
+                    .attr("x", x_scale(d3.timeParse("%Y-%m-%d")(selectedData.date)) - 15)
+                    .attr("y", y_scale(selectedData.amount)-10)
+                    
             }
 
             function mouseout() {
