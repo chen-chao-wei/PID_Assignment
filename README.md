@@ -66,7 +66,9 @@
 ### TODO: 
 ## 0908
   - 功能測試
-  - UI調整 
+  - UI調整
+  - 調整賣家中心的切版
+  - 調整報表呈現
   ## 主頁-商城
   ![image](https://github.com/weichen-chungyo/PID_Assignment/blob/master/viewImages/0908(6).png)
  
