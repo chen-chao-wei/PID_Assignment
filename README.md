@@ -64,3 +64,12 @@
   ## 銷售數據
   ![image](https://github.com/weichen-chungyo/PID_Assignment/blob/master/viewImages/0908(5).jpg)
 ### TODO: 
+## 0908
+  - 功能測試
+  - UI調整 
+  ## 主頁-商城
+  ![image](https://github.com/weichen-chungyo/PID_Assignment/blob/master/viewImages/0908(6).png)
+ 
+### TODO: 
+
+
