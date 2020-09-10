@@ -164,6 +164,11 @@
     <script type="text/javascript" src="/PID_Assignment/js/jquery.toast.js"></script>
     <style class="mall-search-style"></style>
     <script src="/PID_Assignment/js/alert.js"></script>
+    <script type="module">
+        import {initCommodity,clickCard} from '/PID_Assignment/models/module.js';        
+        window.clickCard = clickCard
+        initCommodity();      
+    </script>
     <script>
         window.alert = function(name) {
             var iframe = document.createElement("IFRAME");
@@ -173,7 +178,6 @@
             window.frames[0].window.alert(name);
             iframe.parentNode.removeChild(iframe);
         }
-
         var wConfirm = window.confirm;
         window.confirm = function(message) {
             try {
@@ -193,35 +197,12 @@
                 return wConfirm(message);
             }
         }
-
-        function showToast(heading, message) {
-            $.toast({
-                text: message, // Text that is to be shown in the toast
-                heading: heading, // Optional heading to be shown on the toast
-                icon: 'warning', // Type of toast icon
-                showHideTransition: 'fade', // fade, slide or plain
-                allowToastClose: true, // Boolean value true or false
-                hideAfter: 2000, // false to make it sticky or number representing the miliseconds as time after which toast needs to be hidden
-                stack: 5, // false if there should be only one toast at a time or a number representing the maximum number of toasts to be shown at a time
-                position: 'top-right', // bottom-left or bottom-right or bottom-center or top-left or top-right or top-center or mid-center or an object representing the left, right, top, bottom values
-                textAlign: 'left', // Text alignment i.e. left, right or center
-                loader: true, // Whether to show loader or not. True by default
-                loaderBg: '#9ec600', // Background color of the toast loader
-                beforeShow: function() {}, // will be triggered before the toast is shown
-                afterShown: function() {}, // will be triggered after the toat has been shown
-                beforeHide: function() {}, // will be triggered before the toast gets hidden
-                afterHidden: function() {} // will be triggered after the toast has been hidden
-            });
-        }
-
         $(document).ready(function() {
-
             $("#exampleModalCenter").modal({
                 show: true
             });
             k = $("#header").offset().top;
             window.onscroll = function() {
-
                 s = $(document).scrollTop();
                 var fh_header = $("#header").height();
                 if (s > k) {
@@ -236,12 +217,9 @@
                         height: "107px" //fh_header
                     });
                 }
-                // console.log(s, k);
             };
-
             $("#search").on('change paste keyup', function() {
                 var value = $(this).val().toLowerCase();
-
                 if (!value) {
                     $('.mall-search-style').html('');
                 } else {
@@ -250,153 +228,7 @@
                         '#commodity-content .card-group > div:not([data-title*="' + value + '"]) {display: none;}'
                     );
                 }
-
-
             });
-
-            function initCommodity() {
-
-                $.ajax({
-                    url: '/PID_Assignment/core/upload.php',
-                    type: 'GET',
-                    dataType: "json",
-                    success: function(data) {
-                        //$("#showBox").attr("src", data.src);
-                        if (data.commodityData != undefined) {
-                            //document.getElementById("putForm").reset();
-                            //console.log(data.commodityData);
-                            doCommodityCard(data.commodityData);
-                        }
-                    },
-                    error: function(jqXHR) {
-                        console.log(jqXHR);
-                    }
-                });
-            }
-
-            function doCommodityCard(data) {
-                $("#commodity-card").empty();
-                count = data.length;
-                rowCount = 0;
-                categoryID = 0;
-                categoryIDOneCount = 0;
-                categoryIDTwoCount = 0;
-                if (count > 1) {
-
-                    for (let i = 0; i < count; i++) {
-                        if (data[i]['category'] == "2") {
-                            let idName = "commodity-card-"
-                            let nextIdx = i + 1;
-                            let commodityImg = "#commodity-img-" + i;
-                            let commodityBody = $("#commodity-body-" + i);
-                            let commodityDiv =
-                                idName += i.toString();
-                            if (categoryIDOneCount > 0 && categoryIDOneCount % 5 == 0) {
-                                $("#commodity-group-" + rowCount).after(`<div id="commodity-group-${++rowCount}" class="card-group "></div>`)
-                                console.log("row", rowCount);
-                            }
-                            $("#commodity-group-" + rowCount).append(`
-                            <div id="commodity-card-${categoryIDOneCount}"class="card " data-title="${data[i]['name']} ${data[i]['description']}" value="${data[i]['commodityID']}" onclick="clickCard(this)">
-                            <img id ="commodity-img-${categoryIDOneCount}" class="card-img-top" src="..." alt="Card image cap">
-                            <div id ="commodity-body-${categoryIDOneCount}" class="card-body">
-                            <h5 class="card-title" value="">商品名稱</h5>
-                            <p class="card-text">商品描述</p>
-                            <div class="row">
-                                <div class= "col-md-7"><p class="card-price-text">1</p></div>
-                                <div class= "col-md-5"><p class="pull-right card-text"><small class="text-muted">已售出</small></p></div>
-                            </div>
-                            </div>
-                            </div>`)
-                            if (i < count - 1) {
-                                // var addCard = $("#commodity-card-" + i).clone(true).attr("id", "commodity-card-" + nextIdx)
-                                // $("#" + idName).after(addCard);
-                                //console.log("doCommodityCard", count);
-                            }
-
-                            $("#commodity-img-" + categoryIDOneCount).attr("src", "data:image/jpeg;base64," + data[i]['img']);
-                            $("#commodity-body-" + categoryIDOneCount + " h5").text("產品名稱:" + data[i]['name']);
-                            $("#commodity-body-" + categoryIDOneCount + " h5").attr("value", data[i]['commodityID']);
-                            $("#commodity-body-" + categoryIDOneCount + " p:first").text("商品介紹:" + data[i]['description']);
-                            $("#commodity-body-" + categoryIDOneCount + " > div > div:nth-child(1) > p").text("$" + data[i]['price']);
-                            $("#commodity-body-" + categoryIDOneCount + " p").children(1).text("存貨" + data[i]['quantity']);
-                            categoryIDOneCount++;
-                        } else {
-                            console.log("docarousel");
-                            if (categoryIDTwoCount == 0) {
-                                $("#carousel-indicators").append(`
-                                <li data-slide-to="${categoryIDTwoCount}" data-target="#carousel-46838" class="active" >
-                                </li>`);
-                                $("#carousel-inner").append(`
-                                <div class="carousel-item active"  value="${data[i]['commodityID']}"onclick="clickCard(this)">
-                                    <img class="d-block w-100 " alt="" src="data:image/jpeg;base64,${data[i]['img']}" />
-                                <div class="carousel-caption">
-                                <h4>商品名稱:${data[i]['name']}</h4><p>描述:${data[i]['description']}</p>
-                                </div>                                </div>`);
-                            } else {
-                                $("#carousel-indicators").append(`
-                                <li data-slide-to="${categoryIDTwoCount}" data-target="#carousel-46838" >
-                                </li>`);
-                                $("#carousel-inner").append(` 
-                                <div class="carousel-item" value="${data[i]['commodityID']}"onclick="clickCard(this)">
-                                    <img class="d-block w-100" alt="" src="data:image/jpeg;base64,${data[i]['img']}" />
-                                <div class="carousel-caption">
-                                <h4>產品名稱:${data[i]['name']}</h4><p>描述:${data[i]['description']}</p>
-                                </div>
-                                </div>`);
-                            }
-                            categoryIDTwoCount += 1;
-                        }
-
-
-
-                        //console.log($("#commodity-body-" + i + " p").children());
-                        //console.log("doCommodityCard", data[i]['commodityID']);
-                    }
-                }
-
-            }
-            initCommodity();
-            clickCard = function(obj) {
-                console.log("clickCard", $(obj).attr("value"));
-
-                value = $(obj).attr("value");
-                if (checkAdd()) {
-                    $.ajax({
-                        url: '/PID_Assignment/core/upload.php',
-                        type: 'POST',
-                        dataType: "json",
-                        data: {
-                            action: "addToShopCart",
-                            commodityID: value,
-                            quantity: 1
-                        },
-                        success: function(data) {
-                            //$("#showBox").attr("src", data.src);
-                            if (data.errorMsg != undefined) {
-                                //showToast("Hint", data.errorMsg);
-                                alert(data.errorMsg);
-                                console.log(data.errorMsg);
-                            } else {
-                                //showToast("Hint", data.successMsg);
-                                alert(data.successMsg);
-                            }
-
-                        },
-                        error: function(jqXHR) {
-                            console.log(jqXHR);
-                        }
-                    });
-                }
-            }
-
-            function checkAdd() {
-                let msg ="加入購物車？"
-                if (confirm(msg) == true) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
             $("#applyForAdmin").on('click', function() {
                 $.ajax({
                     url: '/PID_Assignment/core/upload.php',
@@ -405,12 +237,9 @@
                     data: {
                         action: "applyForAdmin"
                     },
-                    success: function(data) {
-                        //$("#showBox").attr("src", data.src);
+                    success: function(data) {                        
                         if (data.msg != undefined) {
-                            //document.getElementById("putForm").reset();
                             alert(data.msg);
-                            //doCommodityCard(data.msg);
                         } else if (data.refresh) {
                             top.location.href = "/PID_Assignment/home/login";
                             alert(data.refresh);
@@ -419,19 +248,10 @@
                     error: function(jqXHR) {
                         console.log(jqXHR);
                     }
-                });
-                // $.post("/PID_Assignment/core/upload.php", {                    
-                //         action: "applyForAdmin"
-                //     })
-                //     .done(function(data) {
-                //         alert(data.msg);
-                //     });
+                });                
                 console.log("applyForAdmin");
             })
         })
     </script>
-
-
 </body>
-
 </html>
